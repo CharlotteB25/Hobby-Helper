@@ -27,11 +27,11 @@ export const generateRecommendations = async (
     trialAvailable,
   } = filters;
 
-  const query: any = {};
+  const matchStage: any = {};
 
   // Apply duration/location filters
-  if (duration) query.durationOptions = duration;
-  if (location) query.locationOptions = location;
+  if (duration) matchStage.durationOptions = duration;
+  if (location) matchStage.locationOptions = location;
 
   // Use user preferences as fallback
   if (user?.preferences) {
@@ -39,34 +39,38 @@ export const generateRecommendations = async (
       wheelchairAccessible === undefined &&
       user.preferences.wheelchairAccessible
     ) {
-      query.wheelchairAccessible = true;
+      matchStage.wheelchairAccessible = true;
     }
     if (ecoFriendly === undefined && user.preferences.ecoFriendly) {
-      query.ecoFriendly = true;
+      matchStage.ecoFriendly = true;
     }
     if (trialAvailable === undefined && user.preferences.trialAvailable) {
-      query["locations.trialAvailable"] = true;
+      matchStage["locations.trialAvailable"] = true;
     }
   } else {
     if (wheelchairAccessible !== undefined) {
-      query.wheelchairAccessible = wheelchairAccessible === "true";
+      matchStage.wheelchairAccessible = wheelchairAccessible === "true";
     }
     if (ecoFriendly !== undefined) {
-      query.ecoFriendly = ecoFriendly === "true";
+      matchStage.ecoFriendly = ecoFriendly === "true";
     }
     if (trialAvailable !== undefined) {
-      query["locations.trialAvailable"] = trialAvailable === "true";
+      matchStage["locations.trialAvailable"] = trialAvailable === "true";
     }
   }
 
-  console.log("📦 Final Mongo query:", query);
+  console.log("📦 Final Mongo match stage:", matchStage);
 
   let hobbies: Array<{ _id: mongoose.Types.ObjectId; tags?: string[] }> = [];
+
   try {
-    hobbies = await Hobby.find(query);
-    console.log(`✅ Found ${hobbies.length} hobbies from DB`);
+    hobbies = await Hobby.aggregate([
+      { $match: matchStage },
+      { $sample: { size: 10 } }, // Grab 10 random matches to work with
+    ]);
+    console.log(`✅ Fetched ${hobbies.length} randomized hobbies from DB`);
   } catch (err) {
-    console.error("❌ DB query failed:", err);
+    console.error("❌ Aggregation query failed:", err);
     throw err;
   }
 
@@ -98,11 +102,7 @@ export const generateRecommendations = async (
     return bMatches - aMatches;
   });
 
-  const shuffleArray = (arr: any[]) => arr.sort(() => Math.random() - 0.5);
-  const finalHobbies =
-    tryNew === "true" ? shuffleArray(sortedHobbies) : sortedHobbies;
-
-  const topHobbies = finalHobbies.slice(0, 3);
+  const topHobbies = sortedHobbies.slice(0, 3); // Pick top 3 from randomized set
   console.log(`🚀 Returning ${topHobbies.length} hobbies`);
 
   return topHobbies;
