@@ -24,5 +24,4 @@ config.js
 # Optional environment variables  
 .env
 
-/api/seed
 
