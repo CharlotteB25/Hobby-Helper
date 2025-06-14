@@ -1,0 +1,1752 @@
+[
+  {
+    "name": "Aerial Yoga",
+    "description": "Learn and practice aerial yoga in Ghent.",
+    "durationOptions": ["1 hr", "2 hr", "3 hr"],
+    "locationOptions": ["Indoor"],
+    "tags": ["Fitness", "Social", "Wellness", "Relaxation"],
+    "difficultyLevels": [
+      {
+        "level": "Beginner",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video0_beginner"]
+      },
+      {
+        "level": "Intermediate",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video0_intermediate"]
+      },
+      {
+        "level": "Advanced",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video0_advanced"]
+      }
+    ],
+    "locations": [
+      {
+        "name": "Citadelpark",
+        "address": "Citadelpark, 9000 Gent, Belgium",
+        "lat": 51.042,
+        "lng": 3.7275,
+        "trialAvailable": true
+      }
+    ],
+    "equipment": ["Paint Brushes", "Scuba Gear", "Bicycle"],
+    "costEstimate": "$10 - $50",
+    "safetyNotes": "",
+    "wheelchairAccessible": true,
+    "ecoFriendly": true
+  },
+  {
+    "name": "Glass Blowing",
+    "description": "Learn and practice glass blowing in Ghent.",
+    "durationOptions": ["45 min", "1 hr", "2 hr"],
+    "locationOptions": ["Outdoor"],
+    "tags": ["Social", "Trial Available", "Relaxation", "Wellness"],
+    "difficultyLevels": [
+      {
+        "level": "Beginner",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video1_beginner"]
+      },
+      {
+        "level": "Intermediate",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video1_intermediate"]
+      },
+      {
+        "level": "Advanced",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video1_advanced"]
+      }
+    ],
+    "locations": [
+      {
+        "name": "Gentbrugse Meersen",
+        "address": "Oudenaardsesteenweg, 9050 Gentbrugge, Belgium",
+        "lat": 51.036,
+        "lng": 3.765,
+        "trialAvailable": true
+      }
+    ],
+    "equipment": ["Bicycle", "Paint Brushes", "Camera"],
+    "costEstimate": "$100 - $500",
+    "safetyNotes": "Stay hydrated.",
+    "wheelchairAccessible": false,
+    "ecoFriendly": false
+  },
+  {
+    "name": "Kayaking",
+    "description": "Learn and practice kayaking in Ghent.",
+    "durationOptions": ["30 min", "1 hr"],
+    "locationOptions": ["Indoor", "Outdoor"],
+    "tags": ["Adventure", "Wellness", "Trial Available", "Sustainability"],
+    "difficultyLevels": [
+      {
+        "level": "Beginner",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video2_beginner"]
+      },
+      {
+        "level": "Intermediate",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video2_intermediate"]
+      },
+      {
+        "level": "Advanced",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video2_advanced"]
+      }
+    ],
+    "locations": [
+      {
+        "name": "Gentbrugse Meersen",
+        "address": "Oudenaardsesteenweg, 9050 Gentbrugge, Belgium",
+        "lat": 51.036,
+        "lng": 3.765,
+        "trialAvailable": true
+      }
+    ],
+    "equipment": ["Barbell", "Binoculars", "Paddle"],
+    "costEstimate": "$10 - $50",
+    "safetyNotes": "Use proper safety equipment.",
+    "wheelchairAccessible": false,
+    "ecoFriendly": false
+  },
+  {
+    "name": "Urban Gardening",
+    "description": "Learn and practice urban gardening in Ghent.",
+    "durationOptions": ["45 min", "1 hr", "2 hr"],
+    "locationOptions": ["Indoor", "Outdoor"],
+    "tags": ["Trial Available", "Fitness", "Social", "Adventure"],
+    "difficultyLevels": [
+      {
+        "level": "Beginner",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video3_beginner"]
+      },
+      {
+        "level": "Intermediate",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video3_intermediate"]
+      },
+      {
+        "level": "Advanced",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video3_advanced"]
+      }
+    ],
+    "locations": [
+      {
+        "name": "Dok Noord",
+        "address": "Dok-Noord 7, 9000 Gent, Belgium",
+        "lat": 51.065,
+        "lng": 3.7333,
+        "trialAvailable": false
+      }
+    ],
+    "equipment": ["Surfboard", "Yoga Mat", "Microphone"],
+    "costEstimate": "$50 - $200",
+    "safetyNotes": "Stay hydrated.",
+    "wheelchairAccessible": false,
+    "ecoFriendly": true
+  },
+  {
+    "name": "Bird Watching",
+    "description": "Learn and practice bird watching in Ghent.",
+    "durationOptions": ["45 min", "1 hr", "2 hr"],
+    "locationOptions": ["Indoor"],
+    "tags": ["Trial Available", "Fitness", "Sustainability", "Relaxation"],
+    "difficultyLevels": [
+      {
+        "level": "Beginner",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video4_beginner"]
+      },
+      {
+        "level": "Intermediate",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video4_intermediate"]
+      },
+      {
+        "level": "Advanced",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video4_advanced"]
+      }
+    ],
+    "locations": [
+      {
+        "name": "Keramiek Ateliers Gent",
+        "address": "Sint-Pietersnieuwstraat 45, 9000 Gent, Belgium",
+        "lat": 51.0456,
+        "lng": 3.7266,
+        "trialAvailable": false
+      }
+    ],
+    "equipment": ["Board Games", "Binoculars", "Paddle"],
+    "costEstimate": "$20 - $100",
+    "safetyNotes": "Warm up before starting.",
+    "wheelchairAccessible": true,
+    "ecoFriendly": false
+  },
+  {
+    "name": "Wine Tasting",
+    "description": "Learn and practice wine tasting in Ghent.",
+    "durationOptions": ["1 hr", "2 hr", "3 hr"],
+    "locationOptions": ["Indoor", "Outdoor"],
+    "tags": ["Fitness", "Sustainability", "Social", "Relaxation"],
+    "difficultyLevels": [
+      {
+        "level": "Beginner",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video5_beginner"]
+      },
+      {
+        "level": "Intermediate",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video5_intermediate"]
+      },
+      {
+        "level": "Advanced",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video5_advanced"]
+      }
+    ],
+    "locations": [
+      {
+        "name": "Keramiek Ateliers Gent",
+        "address": "Sint-Pietersnieuwstraat 45, 9000 Gent, Belgium",
+        "lat": 51.0456,
+        "lng": 3.7266,
+        "trialAvailable": false
+      }
+    ],
+    "equipment": ["Board Games", "Yoga Mat", "Surfboard"],
+    "costEstimate": "$50 - $200",
+    "safetyNotes": "Use proper safety equipment.",
+    "wheelchairAccessible": true,
+    "ecoFriendly": true
+  },
+  {
+    "name": "Ceramics Workshop",
+    "description": "Learn and practice ceramics workshop in Ghent.",
+    "durationOptions": ["1 hr", "2 hr", "3 hr"],
+    "locationOptions": ["Indoor"],
+    "tags": ["Trial Available", "Relaxation", "Fitness", "Sustainability"],
+    "difficultyLevels": [
+      {
+        "level": "Beginner",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video6_beginner"]
+      },
+      {
+        "level": "Intermediate",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video6_intermediate"]
+      },
+      {
+        "level": "Advanced",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video6_advanced"]
+      }
+    ],
+    "locations": [
+      {
+        "name": "Gentbrugse Meersen",
+        "address": "Oudenaardsesteenweg, 9050 Gentbrugge, Belgium",
+        "lat": 51.036,
+        "lng": 3.765,
+        "trialAvailable": true
+      }
+    ],
+    "equipment": ["Paddle", "Bicycle", "Scuba Gear"],
+    "costEstimate": "$20 - $100",
+    "safetyNotes": "Use proper safety equipment.",
+    "wheelchairAccessible": true,
+    "ecoFriendly": true
+  },
+  {
+    "name": "Coffee Brewing",
+    "description": "Learn and practice coffee brewing in Ghent.",
+    "durationOptions": ["1 hr", "2 hr", "3 hr"],
+    "locationOptions": ["Indoor"],
+    "tags": ["Relaxation", "Sustainability", "Wellness", "Fitness"],
+    "difficultyLevels": [
+      {
+        "level": "Beginner",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video7_beginner"]
+      },
+      {
+        "level": "Intermediate",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video7_intermediate"]
+      },
+      {
+        "level": "Advanced",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video7_advanced"]
+      }
+    ],
+    "locations": [
+      {
+        "name": "Citadelpark",
+        "address": "Citadelpark, 9000 Gent, Belgium",
+        "lat": 51.042,
+        "lng": 3.7275,
+        "trialAvailable": true
+      }
+    ],
+    "equipment": ["Microphone", "Scuba Gear", "Paddle"],
+    "costEstimate": "$10 - $50",
+    "safetyNotes": "Stay hydrated.",
+    "wheelchairAccessible": false,
+    "ecoFriendly": true
+  },
+  {
+    "name": "Paddleboarding",
+    "description": "Learn and practice paddleboarding in Ghent.",
+    "durationOptions": ["30 min", "1 hr"],
+    "locationOptions": ["Indoor"],
+    "tags": ["Social", "Relaxation", "Wellness", "Adventure"],
+    "difficultyLevels": [
+      {
+        "level": "Beginner",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video8_beginner"]
+      },
+      {
+        "level": "Intermediate",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video8_intermediate"]
+      },
+      {
+        "level": "Advanced",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video8_advanced"]
+      }
+    ],
+    "locations": [
+      {
+        "name": "Blaarmeersen",
+        "address": "Zuiderlaan 5, 9000 Gent, Belgium",
+        "lat": 51.0398,
+        "lng": 3.6952,
+        "trialAvailable": true
+      }
+    ],
+    "equipment": ["Fishing Rod", "Bicycle", "Yoga Mat"],
+    "costEstimate": "$50 - $200",
+    "safetyNotes": "Use proper safety equipment.",
+    "wheelchairAccessible": true,
+    "ecoFriendly": false
+  },
+  {
+    "name": "Woodworking",
+    "description": "Learn and practice woodworking in Ghent.",
+    "durationOptions": ["30 min", "1 hr"],
+    "locationOptions": ["Outdoor"],
+    "tags": ["Creative", "Relaxation", "Sustainability", "Fitness"],
+    "difficultyLevels": [
+      {
+        "level": "Beginner",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video9_beginner"]
+      },
+      {
+        "level": "Intermediate",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video9_intermediate"]
+      },
+      {
+        "level": "Advanced",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video9_advanced"]
+      }
+    ],
+    "locations": [
+      {
+        "name": "Aerial Yoga Studio",
+        "address": "Korenlei 7, 9000 Gent, Belgium",
+        "lat": 51.054,
+        "lng": 3.72,
+        "trialAvailable": true
+      }
+    ],
+    "equipment": ["Binoculars", "Paddle", "Fishing Rod"],
+    "costEstimate": "$10 - $50",
+    "safetyNotes": "Stay hydrated.",
+    "wheelchairAccessible": false,
+    "ecoFriendly": false
+  },
+  {
+    "name": "Mindful Walking",
+    "description": "Learn and practice mindful walking in Ghent.",
+    "durationOptions": ["45 min", "1 hr", "2 hr"],
+    "locationOptions": ["Outdoor"],
+    "tags": ["Wellness", "Creative", "Relaxation", "Social"],
+    "difficultyLevels": [
+      {
+        "level": "Beginner",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video10_beginner"]
+      },
+      {
+        "level": "Intermediate",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video10_intermediate"]
+      },
+      {
+        "level": "Advanced",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video10_advanced"]
+      }
+    ],
+    "locations": [
+      {
+        "name": "Gentbrugse Meersen",
+        "address": "Oudenaardsesteenweg, 9050 Gentbrugge, Belgium",
+        "lat": 51.036,
+        "lng": 3.765,
+        "trialAvailable": false
+      }
+    ],
+    "equipment": ["Fishing Rod", "Horse", "Scuba Gear"],
+    "costEstimate": "$100 - $500",
+    "safetyNotes": "",
+    "wheelchairAccessible": false,
+    "ecoFriendly": false
+  },
+  {
+    "name": "Calligraphy",
+    "description": "Learn and practice calligraphy in Ghent.",
+    "durationOptions": ["1 hr", "2 hr", "3 hr"],
+    "locationOptions": ["Indoor"],
+    "tags": ["Sustainability", "Fitness", "Wellness", "Social"],
+    "difficultyLevels": [
+      {
+        "level": "Beginner",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video11_beginner"]
+      },
+      {
+        "level": "Intermediate",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video11_intermediate"]
+      },
+      {
+        "level": "Advanced",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video11_advanced"]
+      }
+    ],
+    "locations": [
+      {
+        "name": "Blaarmeersen",
+        "address": "Zuiderlaan 5, 9000 Gent, Belgium",
+        "lat": 51.0398,
+        "lng": 3.6952,
+        "trialAvailable": false
+      }
+    ],
+    "equipment": ["Yoga Mat", "Bicycle", "Board Games"],
+    "costEstimate": "$20 - $100",
+    "safetyNotes": "Use proper safety equipment.",
+    "wheelchairAccessible": true,
+    "ecoFriendly": false
+  },
+  {
+    "name": "Rock Climbing",
+    "description": "Learn and practice rock climbing in Ghent.",
+    "durationOptions": ["45 min", "1 hr", "2 hr"],
+    "locationOptions": ["Indoor", "Outdoor"],
+    "tags": ["Wellness", "Sustainability", "Relaxation", "Adventure"],
+    "difficultyLevels": [
+      {
+        "level": "Beginner",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video12_beginner"]
+      },
+      {
+        "level": "Intermediate",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video12_intermediate"]
+      },
+      {
+        "level": "Advanced",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video12_advanced"]
+      }
+    ],
+    "locations": [
+      {
+        "name": "Graslei",
+        "address": "Graslei, 9000 Gent, Belgium",
+        "lat": 51.056,
+        "lng": 3.721,
+        "trialAvailable": true
+      }
+    ],
+    "equipment": ["Camera", "Barbell", "Binoculars"],
+    "costEstimate": "$50 - $200",
+    "safetyNotes": "",
+    "wheelchairAccessible": true,
+    "ecoFriendly": true
+  },
+  {
+    "name": "Bouldering",
+    "description": "Learn and practice bouldering in Ghent.",
+    "durationOptions": ["30 min", "1 hr"],
+    "locationOptions": ["Outdoor"],
+    "tags": ["Trial Available", "Wellness", "Creative", "Social"],
+    "difficultyLevels": [
+      {
+        "level": "Beginner",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video13_beginner"]
+      },
+      {
+        "level": "Intermediate",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video13_intermediate"]
+      },
+      {
+        "level": "Advanced",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video13_advanced"]
+      }
+    ],
+    "locations": [
+      {
+        "name": "Dok Noord",
+        "address": "Dok-Noord 7, 9000 Gent, Belgium",
+        "lat": 51.065,
+        "lng": 3.7333,
+        "trialAvailable": true
+      }
+    ],
+    "equipment": ["Board Games", "Yoga Mat", "Camera"],
+    "costEstimate": "$100 - $500",
+    "safetyNotes": "Stay hydrated.",
+    "wheelchairAccessible": true,
+    "ecoFriendly": true
+  },
+  {
+    "name": "Swimming",
+    "description": "Learn and practice swimming in Ghent.",
+    "durationOptions": ["1 hr", "2 hr", "3 hr"],
+    "locationOptions": ["Indoor", "Outdoor"],
+    "tags": ["Sustainability", "Wellness", "Social", "Relaxation"],
+    "difficultyLevels": [
+      {
+        "level": "Beginner",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video14_beginner"]
+      },
+      {
+        "level": "Intermediate",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video14_intermediate"]
+      },
+      {
+        "level": "Advanced",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video14_advanced"]
+      }
+    ],
+    "locations": [
+      {
+        "name": "Dok Noord",
+        "address": "Dok-Noord 7, 9000 Gent, Belgium",
+        "lat": 51.065,
+        "lng": 3.7333,
+        "trialAvailable": true
+      }
+    ],
+    "equipment": ["Barbell", "Scuba Gear", "Board Games"],
+    "costEstimate": "$50 - $200",
+    "safetyNotes": "Warm up before starting.",
+    "wheelchairAccessible": false,
+    "ecoFriendly": true
+  },
+  {
+    "name": "Sailing",
+    "description": "Learn and practice sailing in Ghent.",
+    "durationOptions": ["45 min", "1 hr", "2 hr"],
+    "locationOptions": ["Indoor", "Outdoor"],
+    "tags": ["Relaxation", "Social", "Fitness", "Wellness"],
+    "difficultyLevels": [
+      {
+        "level": "Beginner",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video15_beginner"]
+      },
+      {
+        "level": "Intermediate",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video15_intermediate"]
+      },
+      {
+        "level": "Advanced",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video15_advanced"]
+      }
+    ],
+    "locations": [
+      {
+        "name": "Portus Ganda",
+        "address": "Veermanplein 1, 9000 Gent, Belgium",
+        "lat": 51.051,
+        "lng": 3.7355,
+        "trialAvailable": false
+      }
+    ],
+    "equipment": ["Yoga Mat", "Scuba Gear", "Fishing Rod"],
+    "costEstimate": "$100 - $500",
+    "safetyNotes": "Use proper safety equipment.",
+    "wheelchairAccessible": false,
+    "ecoFriendly": false
+  },
+  {
+    "name": "Rowing",
+    "description": "Learn and practice rowing in Ghent.",
+    "durationOptions": ["30 min", "1 hr"],
+    "locationOptions": ["Indoor", "Outdoor"],
+    "tags": ["Relaxation", "Wellness", "Fitness", "Creative"],
+    "difficultyLevels": [
+      {
+        "level": "Beginner",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video16_beginner"]
+      },
+      {
+        "level": "Intermediate",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video16_intermediate"]
+      },
+      {
+        "level": "Advanced",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video16_advanced"]
+      }
+    ],
+    "locations": [
+      {
+        "name": "Blaarmeersen",
+        "address": "Zuiderlaan 5, 9000 Gent, Belgium",
+        "lat": 51.0398,
+        "lng": 3.6952,
+        "trialAvailable": false
+      }
+    ],
+    "equipment": ["Microphone", "Binoculars", "Paddle"],
+    "costEstimate": "$10 - $50",
+    "safetyNotes": "Stay hydrated.",
+    "wheelchairAccessible": true,
+    "ecoFriendly": false
+  },
+  {
+    "name": "Cycling",
+    "description": "Learn and practice cycling in Ghent.",
+    "durationOptions": ["45 min", "1 hr", "2 hr"],
+    "locationOptions": ["Indoor", "Outdoor"],
+    "tags": ["Wellness", "Social", "Fitness", "Trial Available"],
+    "difficultyLevels": [
+      {
+        "level": "Beginner",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video17_beginner"]
+      },
+      {
+        "level": "Intermediate",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video17_intermediate"]
+      },
+      {
+        "level": "Advanced",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video17_advanced"]
+      }
+    ],
+    "locations": [
+      {
+        "name": "Graslei",
+        "address": "Graslei, 9000 Gent, Belgium",
+        "lat": 51.056,
+        "lng": 3.721,
+        "trialAvailable": false
+      }
+    ],
+    "equipment": ["Bicycle"],
+    "costEstimate": "$10 - $50",
+    "safetyNotes": "Stay hydrated and wear a helmet!",
+    "wheelchairAccessible": false,
+    "ecoFriendly": true
+  },
+  {
+    "name": "Pottery",
+    "description": "Learn and practice pottery in Ghent.",
+    "durationOptions": ["1 hr", "2 hr", "3 hr"],
+    "locationOptions": ["Indoor", "Outdoor"],
+    "tags": ["Creative", "Adventure", "Fitness", "Relaxation"],
+    "difficultyLevels": [
+      {
+        "level": "Beginner",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video18_beginner"]
+      },
+      {
+        "level": "Intermediate",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video18_intermediate"]
+      },
+      {
+        "level": "Advanced",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video18_advanced"]
+      }
+    ],
+    "locations": [
+      {
+        "name": "Dok Noord",
+        "address": "Dok-Noord 7, 9000 Gent, Belgium",
+        "lat": 51.065,
+        "lng": 3.7333,
+        "trialAvailable": false
+      }
+    ],
+    "equipment": ["Horse", "Yoga Mat", "Scuba Gear"],
+    "costEstimate": "$20 - $100",
+    "safetyNotes": "",
+    "wheelchairAccessible": false,
+    "ecoFriendly": false
+  },
+  {
+    "name": "Painting",
+    "description": "Learn and practice painting in Ghent.",
+    "durationOptions": ["30 min", "1 hr"],
+    "locationOptions": ["Indoor", "Outdoor"],
+    "tags": ["Relaxation", "Adventure", "Creative", "Fitness"],
+    "difficultyLevels": [
+      {
+        "level": "Beginner",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video19_beginner"]
+      },
+      {
+        "level": "Intermediate",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video19_intermediate"]
+      },
+      {
+        "level": "Advanced",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video19_advanced"]
+      }
+    ],
+    "locations": [
+      {
+        "name": "Dok Noord",
+        "address": "Dok-Noord 7, 9000 Gent, Belgium",
+        "lat": 51.065,
+        "lng": 3.7333,
+        "trialAvailable": false
+      }
+    ],
+    "equipment": ["Camera", "Surfboard", "Paint Brushes"],
+    "costEstimate": "$20 - $100",
+    "safetyNotes": "",
+    "wheelchairAccessible": false,
+    "ecoFriendly": true
+  },
+  {
+    "name": "Photography Walk",
+    "description": "Learn and practice photography walk in Ghent.",
+    "durationOptions": ["1 hr", "2 hr", "3 hr"],
+    "locationOptions": ["Indoor", "Outdoor"],
+    "tags": ["Adventure", "Relaxation", "Social", "Trial Available"],
+    "difficultyLevels": [
+      {
+        "level": "Beginner",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video20_beginner"]
+      },
+      {
+        "level": "Intermediate",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video20_intermediate"]
+      },
+      {
+        "level": "Advanced",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video20_advanced"]
+      }
+    ],
+    "locations": [
+      {
+        "name": "Keramiek Ateliers Gent",
+        "address": "Sint-Pietersnieuwstraat 45, 9000 Gent, Belgium",
+        "lat": 51.0456,
+        "lng": 3.7266,
+        "trialAvailable": false
+      }
+    ],
+    "equipment": ["Camera", "Binoculars", "Fishing Rod"],
+    "costEstimate": "$50 - $200",
+    "safetyNotes": "Use proper safety equipment.",
+    "wheelchairAccessible": true,
+    "ecoFriendly": true
+  },
+  {
+    "name": "Street Art Tour",
+    "description": "Learn and practice street art tour in Ghent.",
+    "durationOptions": ["30 min", "1 hr"],
+    "locationOptions": ["Outdoor"],
+    "tags": ["Sustainability", "Trial Available", "Wellness", "Fitness"],
+    "difficultyLevels": [
+      {
+        "level": "Beginner",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video21_beginner"]
+      },
+      {
+        "level": "Intermediate",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video21_intermediate"]
+      },
+      {
+        "level": "Advanced",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video21_advanced"]
+      }
+    ],
+    "locations": [
+      {
+        "name": "Gentbrugse Meersen",
+        "address": "Oudenaardsesteenweg, 9050 Gentbrugge, Belgium",
+        "lat": 51.036,
+        "lng": 3.765,
+        "trialAvailable": true
+      }
+    ],
+    "equipment": ["Surfboard", "Paint Brushes", "Microphone"],
+    "costEstimate": "$50 - $200",
+    "safetyNotes": "Warm up before starting.",
+    "wheelchairAccessible": false,
+    "ecoFriendly": false
+  },
+  {
+    "name": "Dance Class",
+    "description": "Learn and practice dance class in Ghent.",
+    "durationOptions": ["30 min", "1 hr"],
+    "locationOptions": ["Outdoor"],
+    "tags": ["Creative", "Sustainability", "Wellness", "Fitness"],
+    "difficultyLevels": [
+      {
+        "level": "Beginner",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video22_beginner"]
+      },
+      {
+        "level": "Intermediate",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video22_intermediate"]
+      },
+      {
+        "level": "Advanced",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video22_advanced"]
+      }
+    ],
+    "locations": [
+      {
+        "name": "Graslei",
+        "address": "Graslei, 9000 Gent, Belgium",
+        "lat": 51.056,
+        "lng": 3.721,
+        "trialAvailable": true
+      }
+    ],
+    "equipment": ["Barbell", "Microphone", "Board Games"],
+    "costEstimate": "$20 - $100",
+    "safetyNotes": "Warm up before starting.",
+    "wheelchairAccessible": true,
+    "ecoFriendly": false
+  },
+  {
+    "name": "Meditation",
+    "description": "Learn and practice meditation in Ghent.",
+    "durationOptions": ["30 min", "1 hr"],
+    "locationOptions": ["Outdoor"],
+    "tags": ["Adventure", "Trial Available", "Creative", "Social"],
+    "difficultyLevels": [
+      {
+        "level": "Beginner",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video23_beginner"]
+      },
+      {
+        "level": "Intermediate",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video23_intermediate"]
+      },
+      {
+        "level": "Advanced",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video23_advanced"]
+      }
+    ],
+    "locations": [
+      {
+        "name": "Keramiek Ateliers Gent",
+        "address": "Sint-Pietersnieuwstraat 45, 9000 Gent, Belgium",
+        "lat": 51.0456,
+        "lng": 3.7266,
+        "trialAvailable": false
+      }
+    ],
+    "equipment": ["Paint Brushes", "Barbell", "Yoga Mat"],
+    "costEstimate": "$100 - $500",
+    "safetyNotes": "Use proper safety equipment.",
+    "wheelchairAccessible": false,
+    "ecoFriendly": false
+  },
+  {
+    "name": "Strength Training",
+    "description": "Learn and practice strength training in Ghent.",
+    "durationOptions": ["45 min", "1 hr", "2 hr"],
+    "locationOptions": ["Indoor", "Outdoor"],
+    "tags": ["Wellness", "Relaxation", "Social", "Fitness"],
+    "difficultyLevels": [
+      {
+        "level": "Beginner",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video24_beginner"]
+      },
+      {
+        "level": "Intermediate",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video24_intermediate"]
+      },
+      {
+        "level": "Advanced",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video24_advanced"]
+      }
+    ],
+    "locations": [
+      {
+        "name": "Gentbrugse Meersen",
+        "address": "Oudenaardsesteenweg, 9050 Gentbrugge, Belgium",
+        "lat": 51.036,
+        "lng": 3.765,
+        "trialAvailable": true
+      }
+    ],
+    "equipment": ["Paint Brushes", "Barbell", "Board Games"],
+    "costEstimate": "$10 - $50",
+    "safetyNotes": "Stay hydrated.",
+    "wheelchairAccessible": true,
+    "ecoFriendly": false
+  },
+  {
+    "name": "Personal Training",
+    "description": "Learn and practice personal training in Ghent.",
+    "durationOptions": ["30 min", "1 hr"],
+    "locationOptions": ["Indoor", "Outdoor"],
+    "tags": ["Social", "Fitness", "Creative", "Wellness"],
+    "difficultyLevels": [
+      {
+        "level": "Beginner",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video25_beginner"]
+      },
+      {
+        "level": "Intermediate",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video25_intermediate"]
+      },
+      {
+        "level": "Advanced",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video25_advanced"]
+      }
+    ],
+    "locations": [
+      {
+        "name": "Keramiek Ateliers Gent",
+        "address": "Sint-Pietersnieuwstraat 45, 9000 Gent, Belgium",
+        "lat": 51.0456,
+        "lng": 3.7266,
+        "trialAvailable": false
+      }
+    ],
+    "equipment": ["Paddle", "Scuba Gear", "Bicycle"],
+    "costEstimate": "$50 - $200",
+    "safetyNotes": "Stay hydrated.",
+    "wheelchairAccessible": false,
+    "ecoFriendly": true
+  },
+  {
+    "name": "Chess Club",
+    "description": "Learn and practice chess club in Ghent.",
+    "durationOptions": ["45 min", "1 hr", "2 hr"],
+    "locationOptions": ["Outdoor"],
+    "tags": ["Wellness", "Trial Available", "Social", "Creative"],
+    "difficultyLevels": [
+      {
+        "level": "Beginner",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video26_beginner"]
+      },
+      {
+        "level": "Intermediate",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video26_intermediate"]
+      },
+      {
+        "level": "Advanced",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video26_advanced"]
+      }
+    ],
+    "locations": [
+      {
+        "name": "Bar Bidon",
+        "address": "Bisdomkaai 25, 9000 Gent, Belgium",
+        "lat": 51.0517,
+        "lng": 3.726,
+        "trialAvailable": false
+      }
+    ],
+    "equipment": ["Bicycle", "Barbell", "Microphone"],
+    "costEstimate": "$10 - $50",
+    "safetyNotes": "Stay hydrated.",
+    "wheelchairAccessible": false,
+    "ecoFriendly": false
+  },
+  {
+    "name": "Board Games",
+    "description": "Learn and practice board games in Ghent.",
+    "durationOptions": ["30 min", "1 hr"],
+    "locationOptions": ["Outdoor"],
+    "tags": ["Wellness", "Social", "Fitness", "Adventure"],
+    "difficultyLevels": [
+      {
+        "level": "Beginner",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video27_beginner"]
+      },
+      {
+        "level": "Intermediate",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video27_intermediate"]
+      },
+      {
+        "level": "Advanced",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video27_advanced"]
+      }
+    ],
+    "locations": [
+      {
+        "name": "Bar Bidon",
+        "address": "Bisdomkaai 25, 9000 Gent, Belgium",
+        "lat": 51.0517,
+        "lng": 3.726,
+        "trialAvailable": false
+      }
+    ],
+    "equipment": ["Barbell", "Bicycle", "Board Games"],
+    "costEstimate": "$20 - $100",
+    "safetyNotes": "",
+    "wheelchairAccessible": true,
+    "ecoFriendly": true
+  },
+  {
+    "name": "Stand-up Comedy",
+    "description": "Learn and practice stand-up comedy in Ghent.",
+    "durationOptions": ["45 min", "1 hr", "2 hr"],
+    "locationOptions": ["Indoor", "Outdoor"],
+    "tags": ["Adventure", "Social", "Creative", "Trial Available"],
+    "difficultyLevels": [
+      {
+        "level": "Beginner",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video28_beginner"]
+      },
+      {
+        "level": "Intermediate",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video28_intermediate"]
+      },
+      {
+        "level": "Advanced",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video28_advanced"]
+      }
+    ],
+    "locations": [
+      {
+        "name": "Gentbrugse Meersen",
+        "address": "Oudenaardsesteenweg, 9050 Gentbrugge, Belgium",
+        "lat": 51.036,
+        "lng": 3.765,
+        "trialAvailable": false
+      }
+    ],
+    "equipment": ["Binoculars", "Paddle", "Bicycle"],
+    "costEstimate": "$100 - $500",
+    "safetyNotes": "",
+    "wheelchairAccessible": true,
+    "ecoFriendly": false
+  },
+  {
+    "name": "Acting Workshop",
+    "description": "Learn and practice acting workshop in Ghent.",
+    "durationOptions": ["1 hr", "2 hr", "3 hr"],
+    "locationOptions": ["Indoor"],
+    "tags": ["Adventure", "Trial Available", "Social", "Sustainability"],
+    "difficultyLevels": [
+      {
+        "level": "Beginner",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video29_beginner"]
+      },
+      {
+        "level": "Intermediate",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video29_intermediate"]
+      },
+      {
+        "level": "Advanced",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video29_advanced"]
+      }
+    ],
+    "locations": [
+      {
+        "name": "Aerial Yoga Studio",
+        "address": "Korenlei 7, 9000 Gent, Belgium",
+        "lat": 51.054,
+        "lng": 3.72,
+        "trialAvailable": true
+      }
+    ],
+    "equipment": ["Paddle", "Fishing Rod", "Paint Brushes"],
+    "costEstimate": "$10 - $50",
+    "safetyNotes": "",
+    "wheelchairAccessible": false,
+    "ecoFriendly": false
+  },
+  {
+    "name": "Language Exchange",
+    "description": "Learn and practice language exchange in Ghent.",
+    "durationOptions": ["30 min", "1 hr"],
+    "locationOptions": ["Indoor", "Outdoor"],
+    "tags": ["Social", "Adventure", "Sustainability", "Trial Available"],
+    "difficultyLevels": [
+      {
+        "level": "Beginner",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video30_beginner"]
+      },
+      {
+        "level": "Intermediate",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video30_intermediate"]
+      },
+      {
+        "level": "Advanced",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video30_advanced"]
+      }
+    ],
+    "locations": [
+      {
+        "name": "Keramiek Ateliers Gent",
+        "address": "Sint-Pietersnieuwstraat 45, 9000 Gent, Belgium",
+        "lat": 51.0456,
+        "lng": 3.7266,
+        "trialAvailable": true
+      }
+    ],
+    "equipment": ["Camera", "Barbell", "Board Games"],
+    "costEstimate": "$100 - $500",
+    "safetyNotes": "Stay hydrated.",
+    "wheelchairAccessible": true,
+    "ecoFriendly": false
+  },
+  {
+    "name": "Knitting Circle",
+    "description": "Learn and practice knitting circle in Ghent.",
+    "durationOptions": ["30 min", "1 hr"],
+    "locationOptions": ["Indoor"],
+    "tags": ["Wellness", "Social", "Creative", "Relaxation"],
+    "difficultyLevels": [
+      {
+        "level": "Beginner",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video31_beginner"]
+      },
+      {
+        "level": "Intermediate",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video31_intermediate"]
+      },
+      {
+        "level": "Advanced",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video31_advanced"]
+      }
+    ],
+    "locations": [
+      {
+        "name": "Bar Bidon",
+        "address": "Bisdomkaai 25, 9000 Gent, Belgium",
+        "lat": 51.0517,
+        "lng": 3.726,
+        "trialAvailable": false
+      }
+    ],
+    "equipment": ["Binoculars", "Yoga Mat", "Barbell"],
+    "costEstimate": "$50 - $200",
+    "safetyNotes": "",
+    "wheelchairAccessible": false,
+    "ecoFriendly": false
+  },
+  {
+    "name": "Podcasting",
+    "description": "Learn and practice podcasting in Ghent.",
+    "durationOptions": ["1 hr", "2 hr", "3 hr"],
+    "locationOptions": ["Outdoor"],
+    "tags": ["Relaxation", "Adventure", "Social", "Creative"],
+    "difficultyLevels": [
+      {
+        "level": "Beginner",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video32_beginner"]
+      },
+      {
+        "level": "Intermediate",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video32_intermediate"]
+      },
+      {
+        "level": "Advanced",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video32_advanced"]
+      }
+    ],
+    "locations": [
+      {
+        "name": "Stadstuin Gent",
+        "address": "Gustaaf Callierlaan 233, 9000 Gent, Belgium",
+        "lat": 51.0435,
+        "lng": 3.7299,
+        "trialAvailable": true
+      }
+    ],
+    "equipment": ["Scuba Gear", "Board Games", "Microphone"],
+    "costEstimate": "$50 - $200",
+    "safetyNotes": "Use proper safety equipment.",
+    "wheelchairAccessible": false,
+    "ecoFriendly": true
+  },
+  {
+    "name": "Fishing",
+    "description": "Learn and practice fishing in Ghent.",
+    "durationOptions": ["1 hr", "2 hr", "3 hr"],
+    "locationOptions": ["Indoor", "Outdoor"],
+    "tags": ["Trial Available", "Adventure", "Social", "Sustainability"],
+    "difficultyLevels": [
+      {
+        "level": "Beginner",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video33_beginner"]
+      },
+      {
+        "level": "Intermediate",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video33_intermediate"]
+      },
+      {
+        "level": "Advanced",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video33_advanced"]
+      }
+    ],
+    "locations": [
+      {
+        "name": "Bar Bidon",
+        "address": "Bisdomkaai 25, 9000 Gent, Belgium",
+        "lat": 51.0517,
+        "lng": 3.726,
+        "trialAvailable": true
+      }
+    ],
+    "equipment": ["Binoculars", "Fishing Rod", "Paint Brushes"],
+    "costEstimate": "$100 - $500",
+    "safetyNotes": "Stay hydrated.",
+    "wheelchairAccessible": true,
+    "ecoFriendly": true
+  },
+  {
+    "name": "Running Club",
+    "description": "Learn and practice running club in Ghent.",
+    "durationOptions": ["30 min", "1 hr"],
+    "locationOptions": ["Indoor", "Outdoor"],
+    "tags": ["Sustainability", "Fitness", "Social", "Trial Available"],
+    "difficultyLevels": [
+      {
+        "level": "Beginner",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video34_beginner"]
+      },
+      {
+        "level": "Intermediate",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video34_intermediate"]
+      },
+      {
+        "level": "Advanced",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video34_advanced"]
+      }
+    ],
+    "locations": [
+      {
+        "name": "Dok Noord",
+        "address": "Dok-Noord 7, 9000 Gent, Belgium",
+        "lat": 51.065,
+        "lng": 3.7333,
+        "trialAvailable": true
+      }
+    ],
+    "equipment": ["Microphone", "Fishing Rod", "Surfboard"],
+    "costEstimate": "$10 - $50",
+    "safetyNotes": "Warm up before starting.",
+    "wheelchairAccessible": true,
+    "ecoFriendly": false
+  },
+  {
+    "name": "Writing Workshop",
+    "description": "Learn and practice writing workshop in Ghent.",
+    "durationOptions": ["45 min", "1 hr", "2 hr"],
+    "locationOptions": ["Indoor", "Outdoor"],
+    "tags": ["Sustainability", "Creative", "Wellness", "Relaxation"],
+    "difficultyLevels": [
+      {
+        "level": "Beginner",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video35_beginner"]
+      },
+      {
+        "level": "Intermediate",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video35_intermediate"]
+      },
+      {
+        "level": "Advanced",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video35_advanced"]
+      }
+    ],
+    "locations": [
+      {
+        "name": "Citadelpark",
+        "address": "Citadelpark, 9000 Gent, Belgium",
+        "lat": 51.042,
+        "lng": 3.7275,
+        "trialAvailable": false
+      }
+    ],
+    "equipment": ["Microphone", "Bicycle", "Camera"],
+    "costEstimate": "$100 - $500",
+    "safetyNotes": "Warm up before starting.",
+    "wheelchairAccessible": true,
+    "ecoFriendly": false
+  },
+  {
+    "name": "Origami",
+    "description": "Learn and practice origami in Ghent.",
+    "durationOptions": ["30 min", "1 hr"],
+    "locationOptions": ["Outdoor"],
+    "tags": ["Relaxation", "Creative", "Wellness", "Trial Available"],
+    "difficultyLevels": [
+      {
+        "level": "Beginner",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video36_beginner"]
+      },
+      {
+        "level": "Intermediate",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video36_intermediate"]
+      },
+      {
+        "level": "Advanced",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video36_advanced"]
+      }
+    ],
+    "locations": [
+      {
+        "name": "Blaarmeersen",
+        "address": "Zuiderlaan 5, 9000 Gent, Belgium",
+        "lat": 51.0398,
+        "lng": 3.6952,
+        "trialAvailable": false
+      }
+    ],
+    "equipment": ["Paddle", "Board Games", "Fishing Rod"],
+    "costEstimate": "$100 - $500",
+    "safetyNotes": "Use proper safety equipment.",
+    "wheelchairAccessible": true,
+    "ecoFriendly": false
+  },
+  {
+    "name": "Magic Tricks",
+    "description": "Learn and practice magic tricks in Ghent.",
+    "durationOptions": ["30 min", "1 hr"],
+    "locationOptions": ["Indoor", "Outdoor"],
+    "tags": ["Relaxation", "Adventure", "Sustainability", "Trial Available"],
+    "difficultyLevels": [
+      {
+        "level": "Beginner",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video37_beginner"]
+      },
+      {
+        "level": "Intermediate",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video37_intermediate"]
+      },
+      {
+        "level": "Advanced",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video37_advanced"]
+      }
+    ],
+    "locations": [
+      {
+        "name": "Keramiek Ateliers Gent",
+        "address": "Sint-Pietersnieuwstraat 45, 9000 Gent, Belgium",
+        "lat": 51.0456,
+        "lng": 3.7266,
+        "trialAvailable": false
+      }
+    ],
+    "equipment": ["Barbell", "Binoculars", "Paint Brushes"],
+    "costEstimate": "$10 - $50",
+    "safetyNotes": "Stay hydrated.",
+    "wheelchairAccessible": false,
+    "ecoFriendly": true
+  },
+  {
+    "name": "Cooking Class",
+    "description": "Learn and practice cooking class in Ghent.",
+    "durationOptions": ["1 hr", "2 hr", "3 hr"],
+    "locationOptions": ["Outdoor"],
+    "tags": ["Wellness", "Sustainability", "Trial Available", "Relaxation"],
+    "difficultyLevels": [
+      {
+        "level": "Beginner",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video38_beginner"]
+      },
+      {
+        "level": "Intermediate",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video38_intermediate"]
+      },
+      {
+        "level": "Advanced",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video38_advanced"]
+      }
+    ],
+    "locations": [
+      {
+        "name": "Blaarmeersen",
+        "address": "Zuiderlaan 5, 9000 Gent, Belgium",
+        "lat": 51.0398,
+        "lng": 3.6952,
+        "trialAvailable": false
+      }
+    ],
+    "equipment": ["Bicycle", "Paddle", "Microphone"],
+    "costEstimate": "$100 - $500",
+    "safetyNotes": "",
+    "wheelchairAccessible": false,
+    "ecoFriendly": false
+  },
+  {
+    "name": "Archery",
+    "description": "Learn and practice archery in Ghent.",
+    "durationOptions": ["45 min", "1 hr", "2 hr"],
+    "locationOptions": ["Indoor"],
+    "tags": ["Creative", "Adventure", "Social", "Sustainability"],
+    "difficultyLevels": [
+      {
+        "level": "Beginner",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video39_beginner"]
+      },
+      {
+        "level": "Intermediate",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video39_intermediate"]
+      },
+      {
+        "level": "Advanced",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video39_advanced"]
+      }
+    ],
+    "locations": [
+      {
+        "name": "Bar Bidon",
+        "address": "Bisdomkaai 25, 9000 Gent, Belgium",
+        "lat": 51.0517,
+        "lng": 3.726,
+        "trialAvailable": false
+      }
+    ],
+    "equipment": ["Paddle", "Yoga Mat", "Scuba Gear"],
+    "costEstimate": "$10 - $50",
+    "safetyNotes": "",
+    "wheelchairAccessible": false,
+    "ecoFriendly": true
+  },
+  {
+    "name": "Virtual Reality Gaming",
+    "description": "Learn and practice virtual reality gaming in Ghent.",
+    "durationOptions": ["30 min", "1 hr"],
+    "locationOptions": ["Indoor"],
+    "tags": ["Sustainability", "Trial Available", "Social", "Relaxation"],
+    "difficultyLevels": [
+      {
+        "level": "Beginner",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video40_beginner"]
+      },
+      {
+        "level": "Intermediate",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video40_intermediate"]
+      },
+      {
+        "level": "Advanced",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video40_advanced"]
+      }
+    ],
+    "locations": [
+      {
+        "name": "Aerial Yoga Studio",
+        "address": "Korenlei 7, 9000 Gent, Belgium",
+        "lat": 51.054,
+        "lng": 3.72,
+        "trialAvailable": true
+      }
+    ],
+    "equipment": ["Paint Brushes", "Camera", "Scuba Gear"],
+    "costEstimate": "$50 - $200",
+    "safetyNotes": "",
+    "wheelchairAccessible": true,
+    "ecoFriendly": true
+  },
+  {
+    "name": "Laser Tag",
+    "description": "Learn and practice laser tag in Ghent.",
+    "durationOptions": ["45 min", "1 hr", "2 hr"],
+    "locationOptions": ["Indoor", "Outdoor"],
+    "tags": ["Fitness", "Trial Available", "Relaxation", "Wellness"],
+    "difficultyLevels": [
+      {
+        "level": "Beginner",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video41_beginner"]
+      },
+      {
+        "level": "Intermediate",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video41_intermediate"]
+      },
+      {
+        "level": "Advanced",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video41_advanced"]
+      }
+    ],
+    "locations": [
+      {
+        "name": "Aerial Yoga Studio",
+        "address": "Korenlei 7, 9000 Gent, Belgium",
+        "lat": 51.054,
+        "lng": 3.72,
+        "trialAvailable": false
+      }
+    ],
+    "equipment": ["Scuba Gear", "Paint Brushes", "Bicycle"],
+    "costEstimate": "$10 - $50",
+    "safetyNotes": "Stay hydrated.",
+    "wheelchairAccessible": false,
+    "ecoFriendly": true
+  },
+  {
+    "name": "Horseback Riding",
+    "description": "Learn and practice horseback riding in Ghent.",
+    "durationOptions": ["45 min", "1 hr", "2 hr"],
+    "locationOptions": ["Outdoor"],
+    "tags": ["Trial Available", "Sustainability", "Fitness", "Relaxation"],
+    "difficultyLevels": [
+      {
+        "level": "Beginner",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video42_beginner"]
+      },
+      {
+        "level": "Intermediate",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video42_intermediate"]
+      },
+      {
+        "level": "Advanced",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video42_advanced"]
+      }
+    ],
+    "locations": [
+      {
+        "name": "Bar Bidon",
+        "address": "Bisdomkaai 25, 9000 Gent, Belgium",
+        "lat": 51.0517,
+        "lng": 3.726,
+        "trialAvailable": true
+      }
+    ],
+    "equipment": ["Board Games", "Barbell", "Binoculars"],
+    "costEstimate": "$10 - $50",
+    "safetyNotes": "Warm up before starting.",
+    "wheelchairAccessible": true,
+    "ecoFriendly": true
+  },
+  {
+    "name": "Flower Arranging",
+    "description": "Learn and practice flower arranging in Ghent.",
+    "durationOptions": ["45 min", "1 hr", "2 hr"],
+    "locationOptions": ["Indoor", "Outdoor"],
+    "tags": ["Fitness", "Creative", "Trial Available", "Relaxation"],
+    "difficultyLevels": [
+      {
+        "level": "Beginner",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video43_beginner"]
+      },
+      {
+        "level": "Intermediate",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video43_intermediate"]
+      },
+      {
+        "level": "Advanced",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video43_advanced"]
+      }
+    ],
+    "locations": [
+      {
+        "name": "Keramiek Ateliers Gent",
+        "address": "Sint-Pietersnieuwstraat 45, 9000 Gent, Belgium",
+        "lat": 51.0456,
+        "lng": 3.7266,
+        "trialAvailable": true
+      }
+    ],
+    "equipment": ["Binoculars", "Surfboard", "Yoga Mat"],
+    "costEstimate": "$50 - $200",
+    "safetyNotes": "",
+    "wheelchairAccessible": true,
+    "ecoFriendly": true
+  },
+  {
+    "name": "Model Building",
+    "description": "Learn and practice model building in Ghent.",
+    "durationOptions": ["45 min", "1 hr", "2 hr"],
+    "locationOptions": ["Outdoor"],
+    "tags": ["Adventure", "Fitness", "Wellness", "Creative"],
+    "difficultyLevels": [
+      {
+        "level": "Beginner",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video44_beginner"]
+      },
+      {
+        "level": "Intermediate",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video44_intermediate"]
+      },
+      {
+        "level": "Advanced",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video44_advanced"]
+      }
+    ],
+    "locations": [
+      {
+        "name": "Gentbrugse Meersen",
+        "address": "Oudenaardsesteenweg, 9050 Gentbrugge, Belgium",
+        "lat": 51.036,
+        "lng": 3.765,
+        "trialAvailable": true
+      }
+    ],
+    "equipment": ["Binoculars", "Board Games", "Barbell"],
+    "costEstimate": "$100 - $500",
+    "safetyNotes": "Warm up before starting.",
+    "wheelchairAccessible": false,
+    "ecoFriendly": false
+  },
+  {
+    "name": "Soap Making",
+    "description": "Learn and practice soap making in Ghent.",
+    "durationOptions": ["30 min", "1 hr"],
+    "locationOptions": ["Indoor"],
+    "tags": ["Relaxation", "Sustainability", "Wellness", "Adventure"],
+    "difficultyLevels": [
+      {
+        "level": "Beginner",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video45_beginner"]
+      },
+      {
+        "level": "Intermediate",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video45_intermediate"]
+      },
+      {
+        "level": "Advanced",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video45_advanced"]
+      }
+    ],
+    "locations": [
+      {
+        "name": "Aerial Yoga Studio",
+        "address": "Korenlei 7, 9000 Gent, Belgium",
+        "lat": 51.054,
+        "lng": 3.72,
+        "trialAvailable": true
+      }
+    ],
+    "equipment": ["Board Games", "Horse", "Scuba Gear"],
+    "costEstimate": "$50 - $200",
+    "safetyNotes": "",
+    "wheelchairAccessible": true,
+    "ecoFriendly": false
+  },
+  {
+    "name": "Callisthenics",
+    "description": "Learn and practice callisthenics in Ghent.",
+    "durationOptions": ["30 min", "1 hr"],
+    "locationOptions": ["Outdoor"],
+    "tags": ["Wellness", "Creative", "Social", "Adventure"],
+    "difficultyLevels": [
+      {
+        "level": "Beginner",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video46_beginner"]
+      },
+      {
+        "level": "Intermediate",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video46_intermediate"]
+      },
+      {
+        "level": "Advanced",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video46_advanced"]
+      }
+    ],
+    "locations": [
+      {
+        "name": "Keramiek Ateliers Gent",
+        "address": "Sint-Pietersnieuwstraat 45, 9000 Gent, Belgium",
+        "lat": 51.0456,
+        "lng": 3.7266,
+        "trialAvailable": false
+      }
+    ],
+    "equipment": ["Paddle", "Horse", "Surfboard"],
+    "costEstimate": "$50 - $200",
+    "safetyNotes": "Use proper safety equipment.",
+    "wheelchairAccessible": false,
+    "ecoFriendly": false
+  },
+  {
+    "name": "Pilates",
+    "description": "Learn and practice pilates in Ghent.",
+    "durationOptions": ["45 min", "1 hr", "2 hr"],
+    "locationOptions": ["Outdoor"],
+    "tags": ["Relaxation", "Creative", "Sustainability", "Trial Available"],
+    "difficultyLevels": [
+      {
+        "level": "Beginner",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video47_beginner"]
+      },
+      {
+        "level": "Intermediate",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video47_intermediate"]
+      },
+      {
+        "level": "Advanced",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video47_advanced"]
+      }
+    ],
+    "locations": [
+      {
+        "name": "Stadstuin Gent",
+        "address": "Gustaaf Callierlaan 233, 9000 Gent, Belgium",
+        "lat": 51.0435,
+        "lng": 3.7299,
+        "trialAvailable": true
+      }
+    ],
+    "equipment": ["Yoga Mat", "Surfboard", "Scuba Gear"],
+    "costEstimate": "$100 - $500",
+    "safetyNotes": "Stay hydrated.",
+    "wheelchairAccessible": false,
+    "ecoFriendly": false
+  },
+  {
+    "name": "Scuba Diving",
+    "description": "Learn and practice scuba diving in Ghent.",
+    "durationOptions": ["30 min", "1 hr"],
+    "locationOptions": ["Indoor", "Outdoor"],
+    "tags": ["Creative", "Social", "Adventure", "Sustainability"],
+    "difficultyLevels": [
+      {
+        "level": "Beginner",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video48_beginner"]
+      },
+      {
+        "level": "Intermediate",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video48_intermediate"]
+      },
+      {
+        "level": "Advanced",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video48_advanced"]
+      }
+    ],
+    "locations": [
+      {
+        "name": "Portus Ganda",
+        "address": "Veermanplein 1, 9000 Gent, Belgium",
+        "lat": 51.051,
+        "lng": 3.7355,
+        "trialAvailable": true
+      }
+    ],
+    "equipment": ["Surfboard", "Horse", "Yoga Mat"],
+    "costEstimate": "$20 - $100",
+    "safetyNotes": "Use proper safety equipment.",
+    "wheelchairAccessible": true,
+    "ecoFriendly": true
+  },
+  {
+    "name": "Surfing",
+    "description": "Learn and practice surfing in Ghent.",
+    "durationOptions": ["1 hr", "2 hr", "3 hr"],
+    "locationOptions": ["Outdoor"],
+    "tags": ["Sustainability", "Relaxation", "Adventure", "Creative"],
+    "difficultyLevels": [
+      {
+        "level": "Beginner",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video49_beginner"]
+      },
+      {
+        "level": "Intermediate",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video49_intermediate"]
+      },
+      {
+        "level": "Advanced",
+        "youtubeLinks": ["https://www.youtube.com/watch?v=video49_advanced"]
+      }
+    ],
+    "locations": [
+      {
+        "name": "Portus Ganda",
+        "address": "Veermanplein 1, 9000 Gent, Belgium",
+        "lat": 51.051,
+        "lng": 3.7355,
+        "trialAvailable": true
+      }
+    ],
+    "equipment": ["Paint Brushes", "Paddle", "Microphone"],
+    "costEstimate": "$10 - $50",
+    "safetyNotes": "Use proper safety equipment.",
+    "wheelchairAccessible": true,
+    "ecoFriendly": false
+  }
+]

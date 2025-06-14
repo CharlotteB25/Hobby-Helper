@@ -1,0 +1,14 @@
+[
+  {
+    "user": "681e1ffa823e47f3c8cc5d8e",
+    "hobby": "683a0a4f3075eb63d8f7dd97",
+    "notes": "Tried yoga this morning!",
+    "performedAt": "2024-05-20T08:00:00.000Z"
+  },
+  {
+    "user": "6821f2490fb7a88ff5558ae1",
+    "hobby": "683a0a4f3075eb63d8f7dd98",
+    "notes": "Went bouldering for the first time",
+    "performedAt": "2024-05-25T15:30:00.000Z"
+  }
+]
