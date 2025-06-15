@@ -10,8 +10,8 @@ interface IDifficultyLevel {
 interface ILocation {
   name: string;
   address: string;
-  lat: number;
-  lng: number;
+  lat: number | null;
+  lng: number | null;
   trialAvailable: boolean;
 }
 
@@ -35,15 +35,15 @@ export interface IHobby extends Document {
 // Define DifficultyLevelSchema
 const DifficultyLevelSchema: Schema = new Schema<IDifficultyLevel>({
   level: { type: String, required: true },
-  youtubeLinks: [{ type: String, required: true }],
+  youtubeLinks: [{ type: String, required: false }], // Optional YouTube links
 });
 
 // Define LocationSchema
 const LocationSchema: Schema = new Schema<ILocation>({
   name: { type: String, required: true },
-  address: { type: String, required: true },
-  lat: { type: Number, required: true },
-  lng: { type: Number, required: true },
+  address: { type: String, required: false },
+  lat: { type: Schema.Types.Mixed, required: false }, // Optional latitude
+  lng: { type: Schema.Types.Mixed, required: false },
   trialAvailable: { type: Boolean, required: true },
 });
 

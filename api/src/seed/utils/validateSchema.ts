@@ -8,8 +8,8 @@ export const difficultyLevelSchema = z.object({
 export const locationSchema = z.object({
   name: z.string(),
   address: z.string(),
-  lat: z.number(),
-  lng: z.number(),
+  lat: z.number().nullable(), // latitude can be null
+  lng: z.number().nullable(), // longitude can be null
   trialAvailable: z.boolean(),
 });
 
@@ -23,7 +23,7 @@ export const hobbySchema = z.object({
   locations: z.array(locationSchema),
   equipment: z.array(z.string()),
   costEstimate: z.string(),
-  safetyNotes: z.string(),
+  safetyNotes: z.union([z.string(), z.literal("")]).optional(),
   wheelchairAccessible: z.boolean(),
   ecoFriendly: z.boolean(),
   createdAt: z.date().optional(), // optional since sometimes not included at insertion
