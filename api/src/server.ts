@@ -10,9 +10,9 @@ import UserModel from "./modules/User/User.model";
 const port: number = parseInt(process.env.PORT ?? "3002");
 
 //connect to mongo
-if (process.env.MONGO_CONNECTION) {
+if (process.env.MONGO_CONNECTION_STRING) {
   mongoose
-    .connect(process.env.MONGO_CONNECTION)
+    .connect(process.env.MONGO_CONNECTION_STRING)
     .then(() => {
       console.log("Connected to MongoDB");
 

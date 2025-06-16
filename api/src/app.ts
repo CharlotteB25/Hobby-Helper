@@ -2,20 +2,24 @@ import express, { Express } from "express";
 import cors from "cors";
 import { registerRoutes } from "./routes";
 import { registerMiddleware } from "./middleware";
+import dotenv from "dotenv";
+dotenv.config();
 
 const app: Express = express();
 
 // Define allowed origins
 const allowedOrigins = [
-  "http://localhost:8081", // ✅ your frontend during development
-  "http://localhost:3002",
-  "http://192.168.0.211:3002",
-];
+  process.env.FRONTEND_URL,
+  process.env.FRONTEND_URL_DEV,
+  process.env.FRONTEND_URL_PROD,
+].filter(
+  (origin): origin is string => typeof origin === "string" && origin.length > 0
+);
 
 // Middleware to set CORS headers
 
 const corsOptions: cors.CorsOptions = {
-  origin: allowedOrigins, // Allow all origins (for development purposes)
+  origin: allowedOrigins, // Only defined origins
   credentials: true, // Allow credentials (cookies, authorization headers, etc.)
 };
 

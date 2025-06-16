@@ -29,25 +29,34 @@ export const generateRecommendations = async (
 
   const matchStage: any = {};
 
-  // Apply duration/location filters
-  if (duration) matchStage.durationOptions = duration;
-  if (location) matchStage.locationOptions = location;
+  // Duration/location are common to all
+  if (duration) matchStage.durationOptions = { $in: [duration] };
+  if (location) matchStage.locationOptions = { $in: [location] };
 
-  // Use user preferences as fallback
-  if (user?.preferences) {
+  // ✅ Only apply preference filters if user is logged in
+  if (user) {
     if (
       wheelchairAccessible === undefined &&
-      user.preferences.wheelchairAccessible
+      user.preferences?.wheelchairAccessible
     ) {
       matchStage.wheelchairAccessible = true;
+    } else if (wheelchairAccessible !== undefined) {
+      matchStage.wheelchairAccessible = wheelchairAccessible === "true";
     }
-    if (ecoFriendly === undefined && user.preferences.ecoFriendly) {
+
+    if (ecoFriendly === undefined && user.preferences?.ecoFriendly) {
       matchStage.ecoFriendly = true;
+    } else if (ecoFriendly !== undefined) {
+      matchStage.ecoFriendly = ecoFriendly === "true";
     }
-    if (trialAvailable === undefined && user.preferences.trialAvailable) {
+
+    if (trialAvailable === undefined && user.preferences?.trialAvailable) {
       matchStage["locations.trialAvailable"] = true;
+    } else if (trialAvailable !== undefined) {
+      matchStage["locations.trialAvailable"] = trialAvailable === "true";
     }
   } else {
+    // ⛔ Guests: Only apply explicit filters, skip profile preferences
     if (wheelchairAccessible !== undefined) {
       matchStage.wheelchairAccessible = wheelchairAccessible === "true";
     }
@@ -66,16 +75,16 @@ export const generateRecommendations = async (
   try {
     hobbies = await Hobby.aggregate([
       { $match: matchStage },
-      { $sample: { size: 10 } }, // Grab 10 random matches to work with
+      { $sample: { size: 10 } }, // Random 10
     ]);
-    console.log(`✅ Fetched ${hobbies.length} randomized hobbies from DB`);
+    console.log(`✅ Fetched ${hobbies.length} hobbies from DB`);
   } catch (err) {
     console.error("❌ Aggregation query failed:", err);
     throw err;
   }
 
-  // Filter out previously performed hobbies if "tryNew" is true
-  if (tryNew === "true" && Array.isArray(user?.hobbies)) {
+  // ✅ TryNew: only apply if user is logged in
+  if (tryNew === "true" && user && Array.isArray(user.hobbies)) {
     const performedIds = user.hobbies.map(
       (h) => new mongoose.Types.ObjectId(h.hobby)
     );
@@ -86,6 +95,7 @@ export const generateRecommendations = async (
     console.log(`🎯 After filtering performed hobbies: ${hobbies.length}`);
   }
 
+  // ✅ Favorite tags also only for logged in users
   const favoriteTags = Array.isArray(user?.favouriteTags)
     ? user.favouriteTags
     : [];
@@ -102,7 +112,7 @@ export const generateRecommendations = async (
     return bMatches - aMatches;
   });
 
-  const topHobbies = sortedHobbies.slice(0, 3); // Pick top 3 from randomized set
+  const topHobbies = sortedHobbies.slice(0, 3); // top 3
   console.log(`🚀 Returning ${topHobbies.length} hobbies`);
 
   return topHobbies;
