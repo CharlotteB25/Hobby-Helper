@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "build": "npx esbuild src/server.ts --bundle --platform=node --outfile=dist/index.js --format=esm --external:express --external:mongoose --external:dotenv --external:cors --external:compression --external:helmet --external:passport --external:passport-jwt --external:passport-local --external:bcryptjs --external:zod",
+    "build": "npx esbuild src/server.ts --bundle --platform=node --outfile=dist/index.js --format=esm --external:express --external:mongoose --external:dotenv --external:cors --external:compression --external:helmet --external:passport --external:passport-jwt --external:passport-local --external:bcryptjs --external:zod --external:jsonwebtoken",
     "start": "node dist/index.js",
     "seed:hobbies": "ts-node src/seed/seed.ts",
     "seed:userhobbies": "ts-node src/seed/seedUserHobbies.ts"
