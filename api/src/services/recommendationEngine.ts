@@ -29,17 +29,20 @@ export const generateRecommendations = async (
 
   const matchStage: any = {};
 
-  // Always apply duration/location
+  // Always apply duration and location if present
   if (duration) matchStage.durationOptions = { $in: [duration] };
   if (location) matchStage.locationOptions = { $in: [location] };
 
-  // ✅ Check if user has any preferences enabled
-  const userHasPreferences =
+  // 🧠 Determine if user preferences should apply
+  const hasProfilePrefs =
     user?.preferences &&
-    Object.values(user.preferences).some((v) => v === true);
+    Object.values(user.preferences).some((value) => value === true);
 
-  // ✅ Apply profile preferences only if user has them
-  if (user && userHasPreferences) {
+  const isLoggedIn = !!user;
+
+  // ✅ Apply logic based on presence of user and preferences
+  if (isLoggedIn && hasProfilePrefs) {
+    // Profile preferences apply only if corresponding filter not explicitly passed
     if (wheelchairAccessible !== undefined) {
       matchStage.wheelchairAccessible = wheelchairAccessible === "true";
     } else if (user.preferences?.wheelchairAccessible) {
@@ -58,7 +61,7 @@ export const generateRecommendations = async (
       matchStage["locations.trialAvailable"] = true;
     }
   } else {
-    // 🧍 Guest or no preferences: only apply explicit filters
+    // 🧍 Guest user or no preferences: only use explicit filters
     if (wheelchairAccessible !== undefined) {
       matchStage.wheelchairAccessible = wheelchairAccessible === "true";
     }
@@ -85,7 +88,7 @@ export const generateRecommendations = async (
     throw err;
   }
 
-  // ✅ Filter out performed hobbies if requested
+  // 🎯 Filter out performed hobbies if "tryNew" is true
   if (tryNew === "true" && user && Array.isArray(user.hobbies)) {
     const performedIds = user.hobbies.map(
       (h) => new mongoose.Types.ObjectId(h.hobby)
@@ -97,7 +100,7 @@ export const generateRecommendations = async (
     console.log(`🎯 After filtering performed hobbies: ${hobbies.length}`);
   }
 
-  // ✅ Sort by favorite tags
+  // 🏷️ Sort by favorite tags (optional)
   const favoriteTags = Array.isArray(user?.favouriteTags)
     ? user.favouriteTags
     : [];
@@ -114,7 +117,6 @@ export const generateRecommendations = async (
     return bMatches - aMatches;
   });
 
-  // ✅ Optionally increase this from 3 if needed
   const topHobbies = sortedHobbies.slice(0, 3);
   console.log(`🚀 Returning ${topHobbies.length} hobbies`);
 
