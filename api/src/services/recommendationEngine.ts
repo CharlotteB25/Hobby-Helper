@@ -29,34 +29,36 @@ export const generateRecommendations = async (
 
   const matchStage: any = {};
 
-  // Duration/location are common to all
+  // Always apply duration/location
   if (duration) matchStage.durationOptions = { $in: [duration] };
   if (location) matchStage.locationOptions = { $in: [location] };
 
-  // ✅ Only apply preference filters if user is logged in
-  if (user) {
-    if (
-      wheelchairAccessible === undefined &&
-      user.preferences?.wheelchairAccessible
-    ) {
-      matchStage.wheelchairAccessible = true;
-    } else if (wheelchairAccessible !== undefined) {
+  // ✅ Check if user has any preferences enabled
+  const userHasPreferences =
+    user?.preferences &&
+    Object.values(user.preferences).some((v) => v === true);
+
+  // ✅ Apply profile preferences only if user has them
+  if (user && userHasPreferences) {
+    if (wheelchairAccessible !== undefined) {
       matchStage.wheelchairAccessible = wheelchairAccessible === "true";
+    } else if (user.preferences?.wheelchairAccessible) {
+      matchStage.wheelchairAccessible = true;
     }
 
-    if (ecoFriendly === undefined && user.preferences?.ecoFriendly) {
-      matchStage.ecoFriendly = true;
-    } else if (ecoFriendly !== undefined) {
+    if (ecoFriendly !== undefined) {
       matchStage.ecoFriendly = ecoFriendly === "true";
+    } else if (user.preferences?.ecoFriendly) {
+      matchStage.ecoFriendly = true;
     }
 
-    if (trialAvailable === undefined && user.preferences?.trialAvailable) {
-      matchStage["locations.trialAvailable"] = true;
-    } else if (trialAvailable !== undefined) {
+    if (trialAvailable !== undefined) {
       matchStage["locations.trialAvailable"] = trialAvailable === "true";
+    } else if (user.preferences?.trialAvailable) {
+      matchStage["locations.trialAvailable"] = true;
     }
   } else {
-    // ⛔ Guests: Only apply explicit filters, skip profile preferences
+    // 🧍 Guest or no preferences: only apply explicit filters
     if (wheelchairAccessible !== undefined) {
       matchStage.wheelchairAccessible = wheelchairAccessible === "true";
     }
@@ -75,7 +77,7 @@ export const generateRecommendations = async (
   try {
     hobbies = await Hobby.aggregate([
       { $match: matchStage },
-      { $sample: { size: 10 } }, // Random 10
+      { $sample: { size: 10 } },
     ]);
     console.log(`✅ Fetched ${hobbies.length} hobbies from DB`);
   } catch (err) {
@@ -83,7 +85,7 @@ export const generateRecommendations = async (
     throw err;
   }
 
-  // ✅ TryNew: only apply if user is logged in
+  // ✅ Filter out performed hobbies if requested
   if (tryNew === "true" && user && Array.isArray(user.hobbies)) {
     const performedIds = user.hobbies.map(
       (h) => new mongoose.Types.ObjectId(h.hobby)
@@ -95,7 +97,7 @@ export const generateRecommendations = async (
     console.log(`🎯 After filtering performed hobbies: ${hobbies.length}`);
   }
 
-  // ✅ Favorite tags also only for logged in users
+  // ✅ Sort by favorite tags
   const favoriteTags = Array.isArray(user?.favouriteTags)
     ? user.favouriteTags
     : [];
@@ -112,7 +114,8 @@ export const generateRecommendations = async (
     return bMatches - aMatches;
   });
 
-  const topHobbies = sortedHobbies.slice(0, 3); // top 3
+  // ✅ Optionally increase this from 3 if needed
+  const topHobbies = sortedHobbies.slice(0, 3);
   console.log(`🚀 Returning ${topHobbies.length} hobbies`);
 
   return topHobbies;
