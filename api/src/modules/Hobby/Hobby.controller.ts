@@ -3,20 +3,41 @@ import { AuthRequest } from "../../middleware/auth/authMiddleware";
 import { generateRecommendations } from "../../services/recommendationEngine";
 import Hobby from "./Hobby.model"; // still needed for getAllHobbies
 
+import jwt from "jsonwebtoken";
+import User from "../User/User.model";
+
 export const getSuggestedHobbies = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    const user = (req as AuthRequest).user ?? null;
-    console.log("🔐 Authenticated user:", user?._id || "Guest");
+    let user = null;
+
+    // 🧠 Try to extract token if it exists
+    const authHeader = req.headers.authorization;
+    if (authHeader?.startsWith("Bearer ")) {
+      const token = authHeader.split(" ")[1];
+
+      try {
+        const decoded = jwt.verify(
+          token,
+          process.env.JWT_SECRET || "default_secret"
+        );
+        if (typeof decoded === "object" && "_id" in decoded) {
+          user = await User.findById(decoded._id);
+        }
+      } catch (err) {
+        console.warn(
+          "⚠️ Invalid or expired token in /suggestions — treating as guest"
+        );
+      }
+    }
 
     const hobbies = await generateRecommendations(user, req.query);
     return res.json(hobbies);
   } catch (err: any) {
     console.error("❌ Error in getSuggestedHobbies:", err.message || err);
-    console.error("📛 Stack trace:", err.stack || "No stack available");
     return res.status(500).json({ message: "Internal Server Error" });
   }
 };
