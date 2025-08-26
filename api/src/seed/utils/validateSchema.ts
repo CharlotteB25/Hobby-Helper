@@ -1,5 +1,14 @@
 import { z } from "zod";
 
+/** NEW: supported moods */
+export const moodEnum = z.enum([
+  "stressed",
+  "energized",
+  "creative",
+  "relaxed",
+  "neutral",
+]);
+
 export const difficultyLevelSchema = z.object({
   level: z.string(),
   youtubeLinks: z.array(z.string()),
@@ -27,6 +36,9 @@ export const hobbySchema = z.object({
   wheelchairAccessible: z.boolean(),
   ecoFriendly: z.boolean(),
   createdAt: z.date().optional(), // optional since sometimes not included at insertion
+
+  // NEW: moods this hobby tends to evoke (optional in your JSON/seed)
+  moodEffects: z.array(moodEnum).optional(),
 });
 
 export const hobbiesArraySchema = z.array(hobbySchema);

@@ -373,7 +373,7 @@
     "description": "Lane swimming or aqua classes at Zwembad Van Eyck, a modern indoor pool.",
     "durationOptions": ["1 hr", "2 hr"],
     "locationOptions": ["Indoor"],
-    "tags": ["Fitness", "Wellness", "Skills"],
+    "tags": ["Fitness", "Wellness", "Skill-building"],
     "difficultyLevels": [
       {
         "level": "Beginner",

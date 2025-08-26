@@ -6,7 +6,9 @@
     "build": "npx esbuild src/server.ts --bundle --platform=node --outfile=dist/index.js --format=cjs",
     "start": "node dist/index.js",
     "seed:hobbies": "ts-node src/seed/seed.ts",
-    "seed:userhobbies": "ts-node src/seed/seedUserHobbies.ts"
+    "seed:userhobbies": "ts-node src/seed/seedUserHobbies.ts",
+    "backfill:moods:dry": "ts-node src/seed/backfillMoods.ts --dryRun",
+    "backfill:moods": "ts-node src/seed/backfillMoods.ts"
   },
   "author": "",
   "license": "ISC",

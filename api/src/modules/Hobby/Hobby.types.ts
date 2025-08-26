@@ -1,5 +1,15 @@
 import { Types } from "mongoose";
 
+/** Supported moods */
+export const MOODS = [
+  "stressed",
+  "energized",
+  "creative",
+  "relaxed",
+  "neutral",
+] as const;
+export type Mood = (typeof MOODS)[number];
+
 // Sub-type for location objects
 export interface IHobbyLocation {
   name: string;
@@ -10,7 +20,7 @@ export interface IHobbyLocation {
 
 // Main Hobby type
 export interface IHobby {
-  _id: Types.ObjectId; // MongoDB ObjectId type
+  _id: Types.ObjectId;
   name: string;
   description: string;
   durationOptions: string[];
@@ -22,5 +32,8 @@ export interface IHobby {
   equipment: string[];
   costEstimate: string;
   safetyNotes: string;
-  createdAt?: Date; // optional since it's auto-generated
+  createdAt?: Date;
+
+  /** NEW: how this hobby tends to make users feel */
+  moodEffects?: Mood[];
 }

@@ -24,4 +24,6 @@ config.js
 # Optional environment variables  
 .env
 
+android/
+ios/
 
