@@ -1,0 +1,44 @@
+{
+  "expo": {
+    "name": "HobbyHelper",
+    "slug": "frontend",
+    "version": "1.0.0",
+    "icon": "./assets/icon.png",
+    "android": {
+      "package": "com.anonymous.hobbyhelper",
+      "jsEngine": "jsc",
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyBm6QNS1pJLyzNFYh7AcuyPow1YVXbD9EI"
+        }
+      }
+    },
+    "plugins": [
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/icon.png",
+          "color": "#FF6F61",
+          "sounds": []
+        }
+      ],
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "compileSdkVersion": 35,
+            "targetSdkVersion": 35,
+            "buildToolsVersion": "35.0.0"
+          }
+        }
+      ]
+    ],
+    "extra": {
+      "BACKEND_CONNECTION_STRING": "https://hobby-helper-api.onrender.com/api",
+      "eas": {
+        "projectId": "f546bc67-c31a-4b18-81e0-9b4247c92d60"
+      }
+    },
+    "owner": "charsie"
+  }
+}
