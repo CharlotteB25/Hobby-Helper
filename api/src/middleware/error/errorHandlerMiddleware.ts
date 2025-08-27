@@ -1,31 +1,27 @@
+// src/middleware/error/errorHandlerMiddleware.ts
 import { Request, Response, NextFunction } from "express";
 import AppError from "./AppError";
-import { Error } from "mongoose";
+import mongoose from "mongoose";
 
 export const errorHandler = (
-  err: Error,
-  req: Request,
+  err: any,
+  _req: Request,
   res: Response,
-  next: NextFunction
+  _next: NextFunction
 ) => {
   // Mongoose validation error
-  if (err instanceof Error.ValidationError) {
-    return res.status(400).json({
-      message: err.message,
-      errors: err.errors,
-    });
+  if (err instanceof mongoose.Error.ValidationError) {
+    return res.status(400).json({ message: err.message, errors: err.errors });
   }
 
   // Custom app errors
   if (err instanceof AppError) {
-    const { statusCode, message } = err;
-    return res.status(statusCode).json({
-      message,
-    });
+    return res.status(err.statusCode).json({ message: err.message });
   }
 
   // Unknown errors
-  res.status(500).json({
-    message: err.message ?? "Internal server error",
+  res.status(err.statusCode || 500).json({
+    message: err.message || "Internal server error",
+    // stack: process.env.NODE_ENV === "production" ? undefined : err.stack,
   });
 };

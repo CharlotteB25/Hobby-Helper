@@ -1,16 +1,14 @@
-import { Request, Response, NextFunction } from "express";
+// src/validation/zodValidator.ts
 import { ZodSchema } from "zod";
+import { Request, Response, NextFunction } from "express";
 
-// Universal Zod validator middleware
 export const zodValidator =
-  (schema: ZodSchema) => (req: Request, res: Response, next: NextFunction) => {
-    try {
-      req.body = schema.parse(req.body);
-      next();
-    } catch (err: any) {
-      return res.status(400).json({
-        message: "Validation failed",
-        errors: err.errors,
-      });
+  (schema: ZodSchema<any>) =>
+  (req: Request, res: Response, next: NextFunction) => {
+    const result = schema.safeParse(req.body);
+    if (!result.success) {
+      return res.status(400).json({ error: result.error.flatten() });
     }
+    req.body = result.data;
+    next();
   };

@@ -3,11 +3,16 @@ import cors from "cors";
 import { registerRoutes } from "./routes";
 import { registerMiddleware } from "./middleware";
 import dotenv from "dotenv";
+import { errorHandler } from "./middleware/error/errorHandlerMiddleware"; // Adjust the path as needed
 dotenv.config();
 
 const app: Express = express();
 
-// Define allowed origins
+// ✅ Parse JSON early (BEFORE any routes)
+app.use(express.json({ limit: "1mb" }));
+app.use(express.urlencoded({ extended: true }));
+
+// CORS
 const allowedOrigins = [
   process.env.FRONTEND_URL,
   process.env.FRONTEND_URL_DEV,
@@ -16,25 +21,24 @@ const allowedOrigins = [
   (origin): origin is string => typeof origin === "string" && origin.length > 0
 );
 
-// Middleware to set CORS headers
-
 const corsOptions: cors.CorsOptions = {
-  origin: allowedOrigins, // Only defined origins
-  credentials: true, // Allow credentials (cookies, authorization headers, etc.)
+  origin: allowedOrigins.length ? allowedOrigins : true, // allow if empty (Insomnia won’t care)
+  credentials: true,
 };
-
-// Use CORS middleware
 app.use(cors(corsOptions));
 
-// Register middleware
+// (optional) tiny health route for Render
+app.get("/api/health", (_req, res) => res.json({ ok: true }));
+
+// Register middleware (keep if you need it for auth, logs, etc.)
 registerMiddleware(app);
 
-// Register routes
+// Routes
 registerRoutes(app);
+// ✅ GLOBAL ERROR HANDLER — must be BEFORE 404
+app.use(errorHandler);
 
-// Error handling middleware
-app.use((req, res, next) => {
-  res.status(404).json({ message: "Route not found" });
-});
+// 404
+app.use((_req, res) => res.status(404).json({ message: "Route not found" }));
 
 export default app;

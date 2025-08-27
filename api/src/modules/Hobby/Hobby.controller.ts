@@ -173,7 +173,9 @@ const inferMoodEffects = (tags: string[] = []): string[] => {
 /** POST /hobbies — create a custom hobby (auth required) */
 export const createCustomHobby = async (req: AuthRequest, res: Response) => {
   if (!req.user) return res.status(401).json({ message: "Not authenticated" });
-
+  if (!req.body || typeof req.body !== "object") {
+    return res.status(400).json({ message: "Invalid or missing JSON body" });
+  }
   const body = req.body;
 
   // sensible defaults to satisfy required schema fields
