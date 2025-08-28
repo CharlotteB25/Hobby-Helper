@@ -8,7 +8,6 @@ import {
 import api from "../services/api";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { getCurrentUser } from "../services/userService";
-
 type AuthContextType = {
   user: any;
   token: string | null;
@@ -19,6 +18,9 @@ type AuthContextType = {
   setToken: (token: string | null) => Promise<void>;
   refreshOnboarding: () => Promise<void>;
   logout: () => Promise<void>;
+
+  // ✅ ADD THIS:
+  loadCurrentUser: () => Promise<void>;
 };
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -38,7 +40,7 @@ export const AuthProvider = ({ children }: any) => {
   const isTokenExpired = (token: string): boolean => {
     try {
       const [, payload] = token.split(".");
-      const decoded = JSON.parse(atob(payload));
+      const decoded = JSON.parse(atob(payload)); // if atob is not defined in RN, replace with Buffer.from(payload, 'base64').toString('utf8')
       return decoded.exp * 1000 < Date.now();
     } catch (err) {
       console.warn("⚠️ Token parsing failed or invalid:", err);
@@ -71,6 +73,18 @@ export const AuthProvider = ({ children }: any) => {
     setHasOnboarded(done);
   };
 
+  // ✅ Implement this and reuse everywhere (Splash, Login, etc.)
+  const loadCurrentUser = async () => {
+    try {
+      const userData = await getCurrentUser();
+      setUser(userData);
+      await refreshOnboarding();
+    } catch (e) {
+      console.error("loadCurrentUser failed:", e);
+      // optional: logout() if 401, etc.
+    }
+  };
+
   useEffect(() => {
     const initializeAuth = async () => {
       try {
@@ -79,8 +93,7 @@ export const AuthProvider = ({ children }: any) => {
         if (isValidToken(restoredToken)) {
           if (!isTokenExpired(restoredToken as string)) {
             await setToken(restoredToken);
-            const userData = await getCurrentUser(); // ✅ Fetch current user
-            setUser(userData);
+            await loadCurrentUser(); // ✅ now using the shared method
           } else {
             console.log("🧹 Token is expired");
             await logout();
@@ -126,6 +139,9 @@ export const AuthProvider = ({ children }: any) => {
         setToken,
         refreshOnboarding,
         logout,
+
+        // ✅ expose it
+        loadCurrentUser,
       }}
     >
       {children}

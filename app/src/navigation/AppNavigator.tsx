@@ -1,11 +1,7 @@
-import React, { useEffect, useState } from "react";
-import {
-  NavigationContainer,
-  useNavigationContainerRef,
-} from "@react-navigation/native";
+// src/navigation/AppNavigator.tsx
+import React, { useState, useEffect, useMemo } from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { SafeAreaView } from "react-native-safe-area-context";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   TouchableOpacity,
   Text,
@@ -16,22 +12,25 @@ import {
   StyleSheet,
   Pressable,
 } from "react-native";
-
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import COLORS from "../style/colours";
 
 import LoginScreen from "../screens/LoginScreen";
 import RegisterScreen from "../screens/RegisterScreen";
 import HomeScreen from "../screens/HomeScreen";
-import HobbyListScreen from "../screens/HobbyListScreen";
+import HobbyListWrapper from "../screens/components/HobbyListWrapper";
 import ProfileScreen from "../screens/ProfileScreen";
 import HobbyDetailScreen from "../screens/HobbyDetailScreen";
 import RatingScreen from "../screens/RatingScreen";
 import OnboardingNavigator from "./OnboardingNavigator";
 import { NotificationHandler } from "../utils/notificationHandler";
-import { navigationRef } from "../services/navigationService";
-
+// ⬇️ use both the ref (for .getCurrentRoute()) and the typed helper for navigating
+import {
+  navigationRef,
+  navigate as navTo,
+} from "../services/navigationService";
 import { useAuth } from "../context/AuthContext";
-import { logoutUser } from "../services/userService";
+import SplashScreen from "../screens/components/SplashScreen";
 
 type DifficultyLevel = { level: string; youtubeLinks: string[] };
 type Location = {
@@ -42,6 +41,7 @@ type Location = {
   trialAvailable: boolean;
 };
 type Hobby = {
+  trialAvailable: boolean;
   _id?: string;
   name: string;
   description: string;
@@ -59,62 +59,85 @@ type Hobby = {
 };
 
 export type RootStackParamList = {
+  Splash:
+    | { next?: { screen: keyof RootStackParamList; params?: any } }
+    | undefined;
   Login: undefined;
   Register: undefined;
   Home: undefined;
-  HobbyList: undefined;
+  HobbyList:
+    | { mood: string; location: "Indoor" | "Outdoor"; tryNew: boolean }
+    | undefined;
   Profile: undefined;
   HobbyDetail: { hobby: Hobby; showRatingModal?: boolean };
   Rating: { hobby: Hobby; userId: string };
   Onboarding: undefined;
   Explore: { tag: string };
+  AddHobby: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
-export default function AppNavigator() {
-  const [menuVisible, setMenuVisible] = useState(false);
-
-  const { token, setToken, hasOnboarded, refreshOnboarding, loading, logout } =
-    useAuth();
-
-  const isAuthenticated = Boolean(token) && hasOnboarded;
-
-  // 🔐 Ensure onboarding state is always fresh
-  useEffect(() => {
-    const sync = async () => {
-      if (token) {
-        await refreshOnboarding();
-      } else {
-        await AsyncStorage.removeItem("hasOnboarded");
-        await refreshOnboarding();
-      }
+type MenuItem =
+  | {
+      key: string;
+      label: string;
+      route: keyof RootStackParamList;
+      action?: never;
+    }
+  | {
+      key: string;
+      label: string;
+      route?: never;
+      action: "logout";
     };
 
-    sync();
-  }, [token]);
+export default function AppNavigator() {
+  const [menuVisible, setMenuVisible] = useState(false);
+  const { isAuthenticated, refreshOnboarding, loading, logout, user } =
+    useAuth() as any;
 
-  const handleMenuSelect = async (item: "Profile" | "Logout" | "Login") => {
+  useEffect(() => {
+    (async () => {
+      if (!isAuthenticated) {
+        await AsyncStorage.removeItem("hasOnboarded");
+      }
+      await refreshOnboarding();
+    })();
+  }, [isAuthenticated, refreshOnboarding]);
+
+  const menuItems: MenuItem[] = useMemo(() => {
+    if (isAuthenticated) {
+      return [
+        { key: "profile", label: "Profile", route: "Profile" },
+        { key: "add", label: "Add a Hobby", route: "AddHobby" },
+        { key: "logout", label: "Log out", action: "logout" },
+      ];
+    }
+    return [{ key: "login", label: "Log in", icon: "🔑", route: "Login" }];
+  }, [isAuthenticated]);
+
+  const onSelect = async (item: MenuItem) => {
     setMenuVisible(false);
-    if (item === "Logout") {
+    if (item.action === "logout") {
       try {
         await logout();
         await refreshOnboarding();
         Alert.alert("Logged Out", "You have successfully logged out.");
-
         if (navigationRef.getCurrentRoute()?.name !== "Home") {
-          navigationRef.navigate("Home");
+          navTo("Home"); // ✅ use typed helper
         }
       } catch (error) {
         console.error("Logout failed:", error);
         Alert.alert("Logout Error", "Something went wrong while logging out.");
       }
-    } else {
-      navigationRef.navigate(item);
+      return;
+    }
+    if (item.route) {
+      navTo(item.route); // ✅ typed; fixes “No overload matches this call”
     }
   };
 
-  // 🛑 Wait until auth state is ready
   if (loading) {
     return (
       <View
@@ -125,7 +148,7 @@ export default function AppNavigator() {
           backgroundColor: COLORS.background,
         }}
       >
-        <Text style={{ color: COLORS.primary, fontSize: 18 }}>Loading...</Text>
+        <Text style={{ color: COLORS.primary, fontSize: 18 }}>Loading…</Text>
       </View>
     );
   }
@@ -133,31 +156,32 @@ export default function AppNavigator() {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.background }}>
       <NotificationHandler />
+
       <Stack.Navigator
         initialRouteName="Home"
         screenOptions={{
           headerStyle: { backgroundColor: COLORS.background },
           headerTintColor: COLORS.primary,
           headerTitleStyle: { fontWeight: "bold", fontSize: 20 },
-          contentStyle: { backgroundColor: COLORS.primary },
           headerBackVisible: false,
 
           headerTitle: () => (
             <TouchableOpacity
               onPress={() => {
                 if (navigationRef.getCurrentRoute()?.name !== "Home") {
-                  navigationRef.navigate("Home");
+                  navTo("Home"); // ✅ typed helper here too
                 }
               }}
             >
-              {" "}
               <Image
-                source={require("../../assets/hobbyHelper_logo.png")}
+                source={require("../../assets/title_logo.png")}
                 style={{
-                  height: 40,
-                  width: 40,
+                  height: 90,
+                  width: 200,
                   resizeMode: "contain",
-                  marginLeft: -40,
+                  marginLeft: -50,
+                  marginBottom: -20,
+                  marginTop: -10,
                 }}
               />
             </TouchableOpacity>
@@ -182,6 +206,11 @@ export default function AppNavigator() {
         }}
       >
         <Stack.Screen
+          name="Splash"
+          component={SplashScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
           name="Onboarding"
           component={OnboardingNavigator}
           options={{ headerShown: false }}
@@ -197,13 +226,18 @@ export default function AppNavigator() {
           options={{ headerShown: false }}
         />
         <Stack.Screen name="Home" component={HomeScreen} />
-        <Stack.Screen name="HobbyList" component={HobbyListScreen} />
+        <Stack.Screen name="HobbyList" component={HobbyListWrapper} />
         <Stack.Screen name="Profile" component={ProfileScreen} />
         <Stack.Screen name="HobbyDetail" component={HobbyDetailScreen} />
+        {/* ✅ make sure RatingScreen is typed — see file below */}
         <Stack.Screen name="Rating" component={RatingScreen} />
+        <Stack.Screen
+          name="AddHobby"
+          component={require("../screens/AddHobbyScreen").default}
+        />
       </Stack.Navigator>
 
-      {/* Side menu */}
+      {/* Side Menu */}
       <Modal
         visible={menuVisible}
         transparent
@@ -214,19 +248,32 @@ export default function AppNavigator() {
           style={styles.modalOverlay}
           onPressOut={() => setMenuVisible(false)}
         >
-          <View style={styles.menuContainer}>
-            {menuVisible &&
-              (["Profile", isAuthenticated ? "Logout" : "Login"] as const).map(
-                (item) => (
-                  <TouchableOpacity
-                    key={item}
-                    onPress={() => handleMenuSelect(item)}
-                    style={{ paddingVertical: 8 }}
-                  >
-                    <Text style={styles.menuText}>{item}</Text>
-                  </TouchableOpacity>
-                )
-              )}
+          <View style={styles.menuSheet}>
+            <View style={styles.menuHeader}>
+              <Text style={styles.menuAppTitle}>Hobby Helper</Text>
+              <Text style={styles.menuGreeting}>
+                {isAuthenticated
+                  ? `Hi, ${user?.name || "friend"}!`
+                  : "Welcome!"}
+              </Text>
+            </View>
+
+            <View style={styles.menuList}>
+              {menuItems.map((item) => (
+                <TouchableOpacity
+                  key={item.key}
+                  onPress={() => onSelect(item)}
+                  activeOpacity={0.85}
+                  style={styles.menuRow}
+                >
+                  <Text style={styles.menuLabel}>{item.label}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+
+            <View style={styles.menuFooter}>
+              <Text style={styles.menuFooterText}>v1.0 • Stay curious ✨</Text>
+            </View>
           </View>
         </Pressable>
       </Modal>
@@ -240,20 +287,70 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     alignItems: "flex-end",
     paddingTop: 60,
-    paddingRight: 20,
-    backgroundColor: "rgba(0,0,0,0.1)",
+    paddingRight: 16,
+    backgroundColor: "rgba(0,0,0,0.12)",
   },
-  menuContainer: {
+
+  menuSheet: {
+    width: 120,
     backgroundColor: COLORS.white,
-    padding: 12,
-    borderRadius: 8,
-    elevation: 5,
+    borderRadius: 16,
+    overflow: "hidden",
+    borderWidth: 1,
+    borderColor: "rgba(0,0,0,0.06)",
     shadowColor: "#000",
-    shadowOpacity: 0.2,
-    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 14,
+    shadowOffset: { width: 0, height: 8 },
+    elevation: 6,
   },
-  menuText: {
+
+  menuHeader: {
+    backgroundColor: COLORS.primary,
+    paddingVertical: 14,
+    paddingHorizontal: 14,
+  },
+  menuAppTitle: {
+    color: COLORS.white,
+    fontWeight: "900",
+    fontSize: 16,
+  },
+  menuGreeting: {
+    color: COLORS.white,
+    opacity: 0.9,
+    marginTop: 2,
+  },
+
+  menuList: {
+    paddingVertical: 6,
+  },
+  menuRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 12,
+    paddingHorizontal: 14,
+  },
+  menuIcon: {
+    fontSize: 18,
+    marginRight: 10,
+  },
+  menuLabel: {
     fontSize: 16,
     color: COLORS.text,
+    fontWeight: "800",
+  },
+
+  menuFooter: {
+    borderTopWidth: 1,
+    borderTopColor: "rgba(0,0,0,0.06)",
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+    backgroundColor: "#F9FAFB",
+  },
+  menuFooterText: {
+    fontSize: 12,
+    color: COLORS.text,
+    opacity: 0.6,
+    textAlign: "center",
   },
 });

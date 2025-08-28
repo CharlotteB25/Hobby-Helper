@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+// src/screens/HobbyDetailScreen.tsx
+import React, { useEffect, useState, useMemo } from "react";
 import {
   View,
   Text,
@@ -7,75 +8,100 @@ import {
   Dimensions,
   Alert,
   Modal,
-  Button,
   TextInput,
   TouchableOpacity,
   Linking,
+  Platform,
 } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import { WebView } from "react-native-webview";
-import COLORS from "../style/colours";
 import * as Notifications from "expo-notifications";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Toast from "react-native-toast-message";
 
+import COLORS from "../style/colours";
 import { scheduleRatingReminder } from "../services/notificationService";
-import { hasCompletedOnboarding } from "../utils/onboardingStorage";
 import { getCurrentUser, updateUser } from "../services/userService";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../navigation/AppNavigator";
 
 type Props = NativeStackScreenProps<RootStackParamList, "HobbyDetail">;
 
-const HobbyDetailScreen = ({ route, navigation }: Props) => {
+// Soft tints to match the rest of the app
+const SOFT = {
+  orange: "#fee9dcff",
+  green: "#EEF7E9",
+  neutral: "#F5F7FA",
+};
+
+type DifficultyLevel = { level: string; youtubeLinks?: string[] };
+type Location = {
+  _id?: string;
+  name: string;
+  address?: string;
+  lat?: number;
+  lng?: number;
+  trialAvailable?: boolean;
+};
+type Hobby = {
+  _id: string;
+  name: string;
+  description: string;
+  tags: string[];
+  costEstimate?: string;
+  ecoFriendly?: boolean;
+  trialAvailable?: boolean;
+  wheelchairAccessible?: boolean;
+  equipment?: string[];
+  locations?: Location[];
+  difficultyLevels?: DifficultyLevel[];
+  safetyNotes?: string;
+};
+
+const YT_EMBED = (url: string) =>
+  url.includes("watch?v=") ? url.replace("watch?v=", "embed/") : url;
+
+export default function HobbyDetailScreen({ route }: Props) {
   const { hobby, showRatingModal } = route.params;
-  const firstLocation = hobby.locations[0];
-  const beginnerVideo = hobby.difficultyLevels.find(
-    (d) => d.level === "Beginner"
-  )?.youtubeLinks[0];
+  const firstLocation = hobby.locations?.[0];
+
+  const beginnerVideo = useMemo(() => {
+    const link =
+      hobby.difficultyLevels?.find((d) => d.level === "Beginner")
+        ?.youtubeLinks?.[0] ?? hobby.difficultyLevels?.[0]?.youtubeLinks?.[0];
+    return link ? YT_EMBED(link) : null;
+  }, [hobby]);
 
   const [hasStarted, setHasStarted] = useState(false);
-  const [showModal, setShowModal] = useState(showRatingModal || false);
+  const [showModal, setShowModal] = useState(!!showRatingModal);
   const [ratingInput, setRatingInput] = useState("");
 
   useEffect(() => {
-    const checkIfStarted = async () => {
+    (async () => {
       const started = await AsyncStorage.getItem(`startedHobby:${hobby._id}`);
       setHasStarted(!!started);
-    };
-    checkIfStarted();
-  }, []);
+    })();
+  }, [hobby._id]);
 
   useEffect(() => {
     if (showRatingModal) setShowModal(true);
   }, [showRatingModal]);
 
   const handleStartHobby = async () => {
-    const token = await AsyncStorage.getItem("token");
-    const onboarded = await hasCompletedOnboarding();
-
-    Toast.show({
-      type: "success",
-      text1: "⏳ Reminder Set",
-      text2: "We'll remind you to rate this hobby in 2 hours.",
-    });
-
-    /* if (!token || !onboarded) {
-      navigation.navigate("Onboarding");
-      return;
-    } */
-
     try {
       await Notifications.cancelAllScheduledNotificationsAsync();
-      if (hobby._id) {
-        await scheduleRatingReminder(hobby._id, 7200); // 2 hours in seconds
-      } else {
-        throw new Error("Hobby ID is missing.");
-      }
+      if (!hobby._id) throw new Error("Hobby ID is missing.");
+
+      // schedule in 2 hours (7200 seconds)
+      await scheduleRatingReminder(hobby._id, 7200);
       await AsyncStorage.setItem(`startedHobby:${hobby._id}`, "true");
       setHasStarted(true);
 
-      Alert.alert("Enjoy your hobby!", "We'll remind you to rate it later.");
+      Toast.show({
+        type: "success",
+        text1: "⏳ Reminder set",
+        text2: "We’ll remind you to rate this hobby in 2 hours.",
+      });
     } catch (error) {
       console.error("Failed to start hobby:", error);
       Alert.alert("Oops!", "Failed to schedule the reminder.");
@@ -87,6 +113,7 @@ const HobbyDetailScreen = ({ route, navigation }: Props) => {
       await AsyncStorage.removeItem(`startedHobby:${hobby._id}`);
       await Notifications.cancelAllScheduledNotificationsAsync();
 
+      // Optional: persist to user history (if your API supports it)
       const user = await getCurrentUser();
       const updatedHistory = [
         ...(user.hobbyHistory || []),
@@ -97,146 +124,197 @@ const HobbyDetailScreen = ({ route, navigation }: Props) => {
           rating: 0,
         },
       ];
-
       await updateUser({ ...user, hobbyHistory: updatedHistory });
 
+      setHasStarted(false);
       Toast.show({
         type: "success",
-        text1: "✅ Hobby Complete",
+        text1: "✅ Hobby complete",
         text2: "Saved to your profile history!",
       });
-
-      setHasStarted(false);
     } catch (error) {
       console.error("Error finishing hobby:", error);
       Alert.alert("Oops", "Could not complete the hobby.");
     }
   };
 
+  const openInMaps = () => {
+    if (!firstLocation?.lat || !firstLocation?.lng) return;
+    const url = `https://www.google.com/maps/search/?api=1&query=${firstLocation.lat},${firstLocation.lng}`;
+    Linking.openURL(url).catch(() => {});
+  };
+
+  const submitRating = async () => {
+    const rating = parseInt(ratingInput, 10);
+    if (isNaN(rating) || rating < 1 || rating > 5) {
+      Alert.alert("Invalid Rating", "Enter a number between 1 and 5.");
+      return;
+    }
+
+    try {
+      const user = await getCurrentUser();
+      const updatedHistory = [
+        ...(user.hobbyHistory || []),
+        {
+          id: Date.now(),
+          name: hobby.name,
+          date: new Date().toISOString(),
+          duration: "2 hours",
+          rating,
+        },
+      ];
+      await updateUser({ ...user, hobbyHistory: updatedHistory });
+
+      Toast.show({
+        type: "success",
+        text1: "🎉 Rating saved",
+        text2: "Your rating was added to your history!",
+      });
+      setShowModal(false);
+      setRatingInput("");
+    } catch (err) {
+      console.error("Failed to save rating:", err);
+      Alert.alert("Error", "Could not save your rating.");
+    }
+  };
+
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView
+      style={styles.screen}
+      contentContainerStyle={{ paddingBottom: 32 }}
+    >
+      {/* Rating modal */}
       <Modal
         visible={showModal}
-        animationType="slide"
+        animationType="fade"
         transparent
         onRequestClose={() => setShowModal(false)}
       >
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <Text style={{ fontSize: 18, fontWeight: "bold" }}>
-              Rate your hobby
-            </Text>
+        <View style={styles.modalBackdrop}>
+          <View style={styles.modalCard}>
+            <Text style={styles.modalTitle}>Rate your hobby</Text>
             <TextInput
               placeholder="How many stars (1–5)?"
               keyboardType="numeric"
               value={ratingInput}
               onChangeText={setRatingInput}
-              style={{
-                borderBottomWidth: 1,
-                width: "100%",
-                marginVertical: 12,
-              }}
+              style={styles.modalInput}
+              placeholderTextColor="#999"
             />
-            <Button
-              title="Submit"
-              onPress={async () => {
-                const rating = parseInt(ratingInput);
-                if (isNaN(rating) || rating < 1 || rating > 5) {
-                  Alert.alert(
-                    "Invalid Rating",
-                    "Enter a number between 1 and 5."
-                  );
-                  return;
-                }
-
-                try {
-                  const user = await getCurrentUser();
-                  const updatedHistory = [
-                    ...(user.hobbyHistory || []),
-                    {
-                      id: Date.now(),
-                      name: hobby.name,
-                      date: new Date().toISOString(),
-                      duration: "2 hours",
-                      rating,
-                    },
-                  ];
-
-                  await updateUser({ ...user, hobbyHistory: updatedHistory });
-                  Toast.show({
-                    type: "success",
-                    text1: "🎉 Rating Saved",
-                    text2: "Your rating was added to your history!",
-                  });
-                  setShowModal(false);
-                  setRatingInput("");
-                } catch (err) {
-                  console.error("Failed to save rating:", err);
-                  Alert.alert("Error", "Could not save your rating.");
-                }
-              }}
-            />
+            <TouchableOpacity
+              style={styles.modalPrimary}
+              onPress={submitRating}
+              activeOpacity={0.9}
+            >
+              <Text style={styles.modalPrimaryText}>Submit</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.modalGhost}
+              onPress={() => setShowModal(false)}
+              activeOpacity={0.9}
+            >
+              <Text style={styles.modalGhostText}>Cancel</Text>
+            </TouchableOpacity>
           </View>
         </View>
       </Modal>
 
-      {/* Map */}
-      <View style={styles.heroContainer}>
-        <MapView
-          style={styles.map}
-          initialRegion={{
-            latitude: firstLocation.lat,
-            longitude: firstLocation.lng,
-            latitudeDelta: 0.01,
-            longitudeDelta: 0.01,
-          }}
-          scrollEnabled={false}
-        >
-          <Marker
-            coordinate={{
-              latitude: firstLocation.lat,
-              longitude: firstLocation.lng,
-            }}
-            title={firstLocation.name}
-            description={firstLocation.address}
-          />
-        </MapView>
-        <View style={styles.overlay}>
-          <Text style={styles.heroTitle}>{hobby.name}</Text>
-          <Text style={styles.heroSubtitle}>{firstLocation.name}</Text>
-        </View>
-        <TouchableOpacity
-          style={StyleSheet.absoluteFill}
-          onPress={() => {
-            const url = `https://www.google.com/maps/search/?api=1&query=${firstLocation.lat},${firstLocation.lng}`;
-            Linking.openURL(url);
-          }}
-        />
-        <View style={styles.mapHintContainer}>
-          <Text style={styles.mapHintText}>📍 Tap to open in Maps</Text>
-        </View>
-      </View>
-
-      <View style={styles.section}>
-        <Text style={styles.description}>{hobby.description}</Text>
-        <View style={styles.tagsContainer}>
-          {hobby.tags.map((tag, index) => (
-            <View style={styles.tag}>
-              <Text style={styles.tagText}>{tag}</Text>
+      {/* Hero map */}
+      <View style={styles.hero}>
+        {firstLocation?.lat && firstLocation?.lng ? (
+          <>
+            <MapView
+              style={styles.map}
+              pointerEvents="none"
+              initialRegion={{
+                latitude: firstLocation.lat,
+                longitude: firstLocation.lng,
+                latitudeDelta: 0.01,
+                longitudeDelta: 0.01,
+              }}
+              scrollEnabled={false}
+              zoomEnabled={false}
+              rotateEnabled={false}
+            >
+              <Marker
+                coordinate={{
+                  latitude: firstLocation.lat,
+                  longitude: firstLocation.lng,
+                }}
+                title={firstLocation.name}
+                description={firstLocation.address}
+              />
+            </MapView>
+            <TouchableOpacity
+              style={StyleSheet.absoluteFill}
+              onPress={openInMaps}
+              activeOpacity={1}
+            />
+            <View style={styles.mapOverlay}>
+              <Text style={styles.heroTitle}>{hobby.name}</Text>
+              {firstLocation?.name ? (
+                <Text style={styles.heroSubtitle}>{firstLocation.name}</Text>
+              ) : null}
             </View>
-          ))}
-        </View>
+            <View style={styles.mapHint}>
+              <Text style={styles.mapHintText}>📍 Tap to open in Maps</Text>
+            </View>
+          </>
+        ) : (
+          <View
+            style={[
+              styles.noMap,
+              { justifyContent: "center", alignItems: "center" },
+            ]}
+          >
+            <Text style={styles.heroTitle}>{hobby.name}</Text>
+          </View>
+        )}
       </View>
 
-      <View style={styles.sectionDivider} />
+      {/* Meta chips */}
+      <View style={styles.chips}>
+        {hobby.ecoFriendly ? (
+          <View style={styles.chip} key="meta-eco">
+            <Text style={styles.chipText}>🌿 Eco</Text>
+          </View>
+        ) : null}
+        {hobby.trialAvailable || firstLocation?.trialAvailable ? (
+          <View style={styles.chip} key="meta-trial">
+            <Text style={styles.chipText}>🆓 Trial</Text>
+          </View>
+        ) : null}
+        {hobby.wheelchairAccessible ? (
+          <View style={styles.chip} key="meta-access">
+            <Text style={styles.chipText}>♿ Access</Text>
+          </View>
+        ) : null}
+        {hobby.costEstimate ? (
+          <View style={styles.chip} key="meta-cost">
+            <Text style={styles.chipText}>{hobby.costEstimate}</Text>
+          </View>
+        ) : null}
+      </View>
 
-      {/* Info Grid */}
+      {/* Description */}
+      <View style={styles.section}>
+        <Text style={styles.desc}>{hobby.description}</Text>
+        {!!hobby.tags?.length && (
+          <View style={styles.tagsWrap}>
+            {hobby.tags.map((tag, i) => (
+              <View style={styles.tagPill} key={`tag-${tag}-${i}`}>
+                <Text style={styles.tagText}>{tag}</Text>
+              </View>
+            ))}
+          </View>
+        )}
+      </View>
+
+      <View style={styles.divider} />
+
+      {/* Info grid */}
       <View style={styles.grid}>
-        <InfoBox label="Cost" value={hobby.costEstimate} />
-        <InfoBox
-          label="Equipment"
-          value={hobby.equipment.join(", ") || "None"}
-        />
+        <InfoBox label="Cost" value={hobby.costEstimate || "Varies"} />
         <InfoBox
           label="Accessibility"
           value={hobby.wheelchairAccessible ? "Yes" : "No"}
@@ -247,200 +325,89 @@ const HobbyDetailScreen = ({ route, navigation }: Props) => {
         />
         <InfoBox
           label="Trial Available"
-          value={firstLocation.trialAvailable ? "Yes" : "No"}
+          value={firstLocation?.trialAvailable ? "Yes" : "No"}
+        />
+        <InfoBox
+          label="Equipment"
+          value={
+            Array.isArray(hobby.equipment) && hobby.equipment.length
+              ? hobby.equipment.join(", ")
+              : "None"
+          }
         />
         <InfoBox label="Safety Notes" value={hobby.safetyNotes || "None"} />
       </View>
 
-      <View style={styles.sectionDivider} />
+      <View style={styles.divider} />
 
-      {/* Video */}
+      {/* Beginner / first video */}
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Watch: Beginner Demo</Text>
         {beginnerVideo ? (
-          <WebView
-            style={styles.video}
-            source={{ uri: beginnerVideo.replace("watch?v=", "embed/") }}
-          />
+          <WebView style={styles.video} source={{ uri: beginnerVideo }} />
         ) : (
-          <Text style={styles.description}>No video available.</Text>
+          <Text style={styles.desc}>No video available.</Text>
         )}
       </View>
 
-      <Text style={styles.descriptionHint}>
+      {/* CTA */}
+      <Text style={styles.helperText}>
         {hasStarted
           ? "You're currently doing this hobby."
           : "Start this activity now and get a reminder to rate it later."}
       </Text>
 
       {!hasStarted ? (
-        <TouchableOpacity style={styles.startButton} onPress={handleStartHobby}>
-          <Text style={styles.startButtonText}>Start Hobby</Text>
+        <TouchableOpacity
+          style={styles.primaryBtn}
+          onPress={handleStartHobby}
+          activeOpacity={0.95}
+        >
+          <Text style={styles.primaryBtnText}>Start Hobby</Text>
         </TouchableOpacity>
       ) : (
         <TouchableOpacity
-          style={[styles.startButton, { backgroundColor: COLORS.action }]}
+          style={[styles.primaryBtn, { backgroundColor: COLORS.accent }]}
           onPress={handleCompleteHobby}
+          activeOpacity={0.95}
         >
-          <Text style={styles.startButtonText}>Done with Hobby</Text>
+          <Text style={styles.primaryBtnText}>Done with Hobby</Text>
         </TouchableOpacity>
       )}
     </ScrollView>
   );
-};
+}
 
-const InfoBox = ({ label, value }: { label: string; value: string }) => (
-  <View style={styles.gridItem}>
-    <Text style={styles.gridLabel}>{label}</Text>
-    <Text style={styles.gridValue}>{value}</Text>
-  </View>
-);
-
-// Reuse your existing styles object...
+function InfoBox({ label, value }: { label: string; value: string }) {
+  return (
+    <View style={styles.gridItem}>
+      <Text style={styles.gridLabel}>{label}</Text>
+      <Text style={styles.gridValue}>{value}</Text>
+    </View>
+  );
+}
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: COLORS.background,
-  },
-  heroContainer: {
-    height: 250,
-  },
-  modalContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "rgba(0,0,0,0.5)",
-  },
-  modalContent: {
-    width: "90%",
-    backgroundColor: COLORS.white,
-    padding: 20,
-    borderRadius: 10,
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
-    elevation: 5,
-  },
-  map: {
+  screen: { flex: 1, backgroundColor: COLORS.background },
+
+  // Hero
+  hero: { height: 250, position: "relative" },
+  map: { ...StyleSheet.absoluteFillObject },
+  noMap: {
     ...StyleSheet.absoluteFillObject,
+    backgroundColor: SOFT.neutral,
+    padding: 16,
   },
-  overlay: {
+  mapOverlay: {
     position: "absolute",
     bottom: 0,
     width: "100%",
     backgroundColor: "rgba(0,0,0,0.5)",
     padding: 16,
   },
-  heroTitle: {
-    color: COLORS.white,
-    fontSize: 24,
-    fontWeight: "bold",
-  },
-  heroSubtitle: {
-    color: COLORS.white,
-    fontSize: 16,
-    marginTop: 4,
-  },
-  section: {
-    padding: 20,
-  },
-  sectionTitle: {
-    fontSize: 20,
-    fontWeight: "600",
-    marginBottom: 10,
-    color: COLORS.primary,
-  },
-  description: {
-    fontSize: 16,
-    fontWeight: "600",
-    marginTop: 10,
-    color: COLORS.text,
-  },
-  tagsContainer: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    marginTop: 15,
-    gap: 8,
-  },
-
-  tag: {
-    backgroundColor: COLORS.primary,
-    paddingVertical: 8,
-    paddingHorizontal: 10,
-    borderRadius: 20,
-  },
-
-  tagText: {
-    color: COLORS.white,
-    fontSize: 12,
-    fontWeight: "600",
-  },
-
-  grid: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "space-between", // distributes items evenly across each row
-    paddingHorizontal: 20,
-  },
-  gridItem: {
-    width: "48%", // two per row with spacing
-    marginBottom: 16,
-    padding: 12,
-    backgroundColor: COLORS.white,
-    borderRadius: 10,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-    // remove marginRight — no longer needed
-    alignItems: "center", // ✅ center content inside each card
-  },
-
-  gridLabel: {
-    fontSize: 14,
-    fontWeight: "600",
-    color: COLORS.primary,
-  },
-  gridValue: {
-    fontSize: 14,
-    color: COLORS.text,
-  },
-  equipmentList: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "center",
-    marginTop: 8,
-  },
-  equipmentTag: {
-    backgroundColor: COLORS.background || "#f1f1f1",
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 16,
-    margin: 4,
-  },
-  equipmentText: {
-    fontSize: 13,
-    color: COLORS.text,
-  },
-
-  sectionDivider: {
-    height: 1,
-    backgroundColor: COLORS.border || "#ccc",
-    marginVertical: 20,
-    marginHorizontal: 20,
-  },
-  descriptionHint: {
-    textAlign: "center",
-    marginHorizontal: 20,
-    fontSize: 14,
-    color: COLORS.text,
-    marginBottom: 10,
-  },
-  mapHintContainer: {
+  heroTitle: { color: COLORS.white, fontSize: 24, fontWeight: "900" },
+  heroSubtitle: { color: COLORS.white, fontSize: 16, marginTop: 4 },
+  mapHint: {
     position: "absolute",
     bottom: 10,
     right: 10,
@@ -449,31 +416,162 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
     borderRadius: 16,
   },
+  mapHintText: { color: COLORS.white, fontSize: 12, fontWeight: "700" },
 
-  mapHintText: {
-    color: COLORS.white,
-    fontSize: 12,
-    fontWeight: "500",
+  // Chips row
+  chips: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 8,
+    paddingHorizontal: 16,
+    paddingTop: 14,
+  },
+  chip: {
+    backgroundColor: SOFT.neutral,
+    borderRadius: 999,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderWidth: 1,
+    borderColor: "rgba(0,0,0,0.06)",
+  },
+  chipText: { color: COLORS.text, fontWeight: "700" },
+
+  // Sections
+  section: { paddingHorizontal: 16, paddingTop: 14 },
+  sectionTitle: {
+    fontSize: 16,
+    fontWeight: "800",
+    color: COLORS.text,
+    marginBottom: 6,
+  },
+  desc: { color: COLORS.text, opacity: 0.95, lineHeight: 20 },
+  tagsWrap: { flexDirection: "row", flexWrap: "wrap", gap: 8, marginTop: 12 },
+  tagPill: {
+    backgroundColor: SOFT.orange,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 999,
+    borderWidth: 1,
+    borderColor: "rgba(0,0,0,0.06)",
+  },
+  tagText: { color: COLORS.primary, fontWeight: "800", fontSize: 12 },
+  divider: {
+    height: 1,
+    backgroundColor: COLORS.accent || "rgba(0,0,0,0.08)",
+    marginVertical: 16,
+    marginHorizontal: 16,
   },
 
+  // Grid
+  grid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-between",
+    paddingHorizontal: 16,
+  },
+  gridItem: {
+    width: "48%",
+    marginBottom: 12,
+    padding: 12,
+    backgroundColor: "#fff",
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: "rgba(0,0,0,0.06)",
+    alignItems: "center",
+    // subtle elevation/shadow
+    ...Platform.select({
+      ios: {
+        shadowColor: "#000",
+        shadowOpacity: 0.06,
+        shadowRadius: 10,
+        shadowOffset: { width: 0, height: 6 },
+      },
+      android: { elevation: 1 },
+    }),
+  },
+  gridLabel: {
+    fontSize: 12,
+    fontWeight: "800",
+    color: COLORS.primary,
+    marginBottom: 4,
+  },
+  gridValue: { fontSize: 13, color: COLORS.text, textAlign: "center" },
+
+  // Video
   video: {
     height: 200,
-    width: Dimensions.get("window").width - 40,
+    width: Dimensions.get("window").width - 32,
     alignSelf: "center",
-    marginVertical: 10,
+    marginTop: 8,
+    borderRadius: 12,
+    overflow: "hidden",
   },
-  startButton: {
+
+  // Helper + CTAs
+  helperText: {
+    textAlign: "center",
+    marginHorizontal: 16,
+    fontSize: 14,
+    color: COLORS.text,
+    marginTop: 16,
+    marginBottom: 8,
+  },
+  primaryBtn: {
     backgroundColor: COLORS.primary,
-    padding: 15,
-    margin: 20,
-    borderRadius: 30,
+    paddingVertical: 14,
+    borderRadius: 14,
+    alignItems: "center",
+    marginHorizontal: 16,
+    ...Platform.select({
+      ios: {
+        shadowColor: "#000",
+        shadowOpacity: 0.08,
+        shadowRadius: 10,
+        shadowOffset: { width: 0, height: 6 },
+      },
+      android: { elevation: 1 },
+    }),
+  },
+  primaryBtnText: { color: "#fff", fontSize: 16, fontWeight: "900" },
+
+  // Rating modal
+  modalBackdrop: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.35)",
+    justifyContent: "center",
     alignItems: "center",
   },
-  startButtonText: {
-    color: COLORS.white,
-    fontSize: 18,
-    fontWeight: "bold",
+  modalCard: {
+    width: "86%",
+    backgroundColor: "#fff",
+    borderRadius: 16,
+    padding: 16,
+    borderWidth: 1,
+    borderColor: "rgba(0,0,0,0.06)",
   },
+  modalTitle: { fontSize: 18, fontWeight: "900", color: COLORS.text },
+  modalInput: {
+    marginTop: 12,
+    borderWidth: 1,
+    borderColor: "rgba(0,0,0,0.12)",
+    borderRadius: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    color: COLORS.text,
+  },
+  modalPrimary: {
+    marginTop: 12,
+    backgroundColor: COLORS.primary,
+    paddingVertical: 12,
+    borderRadius: 12,
+    alignItems: "center",
+  },
+  modalPrimaryText: { color: "#fff", fontWeight: "900" },
+  modalGhost: {
+    paddingVertical: 12,
+    borderRadius: 12,
+    alignItems: "center",
+    marginTop: 6,
+  },
+  modalGhostText: { color: COLORS.text, opacity: 0.7, fontWeight: "700" },
 });
-
-export default HobbyDetailScreen;

@@ -1,147 +1,145 @@
-import { useState } from "react";
+// src/screens/LoginScreen.tsx
+import React, { useState } from "react";
 import {
   View,
   Text,
   TextInput,
-  Button,
-  Image,
-  Alert,
-  StyleSheet,
   TouchableOpacity,
+  StyleSheet,
+  Alert,
 } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import COLORS from "../style/colours";
 import { useAuth } from "../context/AuthContext";
-import { setToken } from "../services/tokenManager";
-import { loginUser, getCurrentUser } from "../services/userService";
-import COLORS from "../style/colours"; // ✅ Import color palette
-import AsyncStorage from "@react-native-async-storage/async-storage"; // For storing redirect info
-import api from "../services/api"; // Assuming you have an API service set up
-import { setOnboardingCompleted } from "../utils/onboardingStorage";
+import { loginUser } from "../services/userService";
 
-const LoginScreen = ({ navigation }: any) => {
+const POST_AUTH_NEXT_KEY = "postAuthNext";
+
+type Props = { navigation: any };
+
+export default function LoginScreen({ navigation }: Props) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { setUser, setToken: setGlobalToken, refreshOnboarding } = useAuth();
+  const { setToken, loadCurrentUser } = useAuth();
 
   const handleLogin = async () => {
     try {
-      const response = await api.post("/login", { email, password });
-      const token = response.data.token;
-
-      await setToken(token); // persist to storage
-      await setGlobalToken(token); // set in context
-
-      // ✅ Ensure onboarding flag is set
-      await setOnboardingCompleted();
-
-      // ✅ Now the refresh will correctly pick it up
-      await refreshOnboarding();
-
-      // Redirect logic
-      const stored = await AsyncStorage.getItem("postLoginRedirect");
-      if (stored) {
-        const { screen, params } = JSON.parse(stored);
-        await AsyncStorage.removeItem("postLoginRedirect");
-        navigation.replace(screen, params);
-      } else {
-        navigation.replace("Home");
+      if (!email || !password) {
+        Alert.alert("Missing info", "Please enter email and password.");
+        return;
       }
-    } catch (err) {
-      console.error("Login failed:", err);
-      Alert.alert(
-        "Login Failed",
-        "Please check your credentials and try again."
-      );
+
+      // Call your backend login
+      const res: any = await loginUser(email, password);
+
+      // Be tolerant to different token field names
+      const token: string | undefined =
+        res?.token || res?.jwt || res?.accessToken;
+
+      if (!token) {
+        Alert.alert("Login failed", "No token returned from server.");
+        return;
+      }
+
+      // Persist token (this also sets axios Authorization header via context)
+      await setToken(token);
+
+      // Optional: hydrate user/profile so Home can react immediately
+      if (typeof loadCurrentUser === "function") {
+        try {
+          await loadCurrentUser();
+        } catch {}
+      }
+
+      // Resume pending deep-link/redirect if present (e.g., from HobbyList gate)
+      const rawNext = await AsyncStorage.getItem(POST_AUTH_NEXT_KEY);
+      const next = rawNext ? JSON.parse(rawNext) : null;
+      await AsyncStorage.removeItem(POST_AUTH_NEXT_KEY);
+
+      if (next?.screen) {
+        navigation.reset({
+          index: 0,
+          routes: [{ name: next.screen, params: next.params }],
+        });
+      } else {
+        navigation.reset({ index: 0, routes: [{ name: "Home" }] });
+      }
+    } catch (e: any) {
+      console.error("Login failed:", e);
+      const msg =
+        e?.response?.data?.message ||
+        e?.message ||
+        "Please check your credentials and try again.";
+      Alert.alert("Login failed", msg);
     }
   };
 
   return (
     <View style={styles.container}>
-      <Image
-        source={require("../../assets/hobbyHelper_hometitle.png")} // ✅ Use your app logo
-        style={styles.image}
-      />
+      <Text style={styles.title}>Welcome back</Text>
 
-      <Text style={styles.label}>Email</Text>
       <TextInput
         style={styles.input}
-        onChangeText={setEmail}
-        value={email}
+        placeholder="Email"
         autoCapitalize="none"
-        placeholder="Enter your email"
-        placeholderTextColor={COLORS.black}
+        keyboardType="email-address"
+        value={email}
+        onChangeText={setEmail}
+        placeholderTextColor="#999"
       />
-
-      <Text style={styles.label}>Password</Text>
       <TextInput
         style={styles.input}
-        onChangeText={setPassword}
-        value={password}
+        placeholder="Password"
         secureTextEntry
-        placeholder="Enter your password"
-        placeholderTextColor={COLORS.black}
+        value={password}
+        onChangeText={setPassword}
+        placeholderTextColor="#999"
       />
 
-      <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
-        <Text style={styles.buttonText}>Login</Text>
+      <TouchableOpacity style={styles.primaryBtn} onPress={handleLogin}>
+        <Text style={styles.primaryBtnText}>Log in</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        style={styles.linkBtn}
+        onPress={() => navigation.navigate("Onboarding")}
+      >
+        <Text style={styles.linkText}>New here? Complete onboarding</Text>
       </TouchableOpacity>
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    justifyContent: "center",
     backgroundColor: COLORS.background,
+    justifyContent: "center",
   },
   title: {
-    fontSize: 28,
-    fontWeight: "700",
-    textAlign: "center",
-    color: COLORS.primary,
-  },
-  image: {
-    width: 250,
-    height: 150,
-    alignSelf: "center",
-  },
-  label: {
-    fontSize: 16,
-    marginBottom: 6,
-    fontWeight: "500",
+    fontSize: 22,
+    fontWeight: "900",
     color: COLORS.text,
+    marginBottom: 16,
   },
   input: {
-    height: 48,
-    borderColor: COLORS.border,
+    backgroundColor: "#fff",
+    borderRadius: 12,
+    padding: 14,
+    marginBottom: 12,
     borderWidth: 1,
-    borderRadius: 10,
-    paddingHorizontal: 14,
-    marginBottom: 20,
-    backgroundColor: COLORS.white,
+    borderColor: "rgba(0,0,0,0.08)",
     color: COLORS.text,
   },
-  loginButton: {
-    backgroundColor: COLORS.action,
+  primaryBtn: {
+    backgroundColor: COLORS.primary,
     paddingVertical: 14,
-    borderRadius: 25,
+    borderRadius: 12,
     alignItems: "center",
-    marginBottom: 20,
+    marginTop: 6,
   },
-  buttonText: {
-    color: COLORS.white,
-    fontSize: 16,
-    fontWeight: "600",
-  },
-  registerButton: {
-    alignItems: "center",
-  },
-  registerText: {
-    color: COLORS.secondary,
-    fontSize: 16,
-    fontWeight: "600",
-  },
+  primaryBtnText: { color: "#fff", fontWeight: "900", fontSize: 16 },
+  linkBtn: { paddingVertical: 14, alignItems: "center" },
+  linkText: { color: COLORS.primary, fontWeight: "700" },
 });
-
-export default LoginScreen;

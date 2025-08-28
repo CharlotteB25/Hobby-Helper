@@ -1,3 +1,4 @@
+// src/screens/components/SplashLoadingWrapper.tsx
 import React, { useEffect, useState } from "react";
 import SplashScreen from "./SplashScreen";
 
@@ -10,22 +11,23 @@ const SplashLoadingWrapper: React.FC<Props> = ({ loadFunction, children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const load = async () => {
+    (async () => {
       try {
         await loadFunction();
-        await new Promise((resolve) => setTimeout(resolve, 500)); // Artificial delay for smoothness
+        await new Promise((r) => setTimeout(r, 500)); // optional smoothing
       } catch (err) {
         console.error("Error during screen load:", err);
       } finally {
         setLoading(false);
       }
-    };
-
-    load();
-  }, []);
+    })();
+  }, [loadFunction]);
 
   if (loading) {
-    return <SplashScreen />;
+    return <SplashScreen mode="visual" />;
+    {
+      /* ← just visual, no redirects */
+    }
   }
 
   return <>{children}</>;

@@ -6,16 +6,15 @@ import AppNavigator from "./src/navigation/AppNavigator";
 import "react-native-gesture-handler";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import * as Notifications from "expo-notifications";
-import { Alert, Platform } from "react-native";
+import { Alert, Platform, View, ActivityIndicator } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import SplashScreen from "./src/screens/components/SplashScreen";
+import BootSplash from "./src/screens/components/BootSplash"; // ← use this
 import Toast from "react-native-toast-message";
-import { NotificationHandler } from "./src/utils/notificationHandler"; // move handler here
+import { NotificationHandler } from "./src/utils/notificationHandler";
 import { NavigationContainer } from "@react-navigation/native";
 import { navigationRef } from "./src/services/navigationService";
 import { decode as atob, encode as btoa } from "base-64";
 
-// Setup foreground behavior
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
     shouldShowBanner: true,
@@ -25,7 +24,6 @@ Notifications.setNotificationHandler({
   }),
 });
 
-// Setup channel
 const setupNotificationChannel = async () => {
   if (Platform.OS === "android") {
     await Notifications.setNotificationChannelAsync("default", {
@@ -36,21 +34,16 @@ const setupNotificationChannel = async () => {
   }
 };
 
-if (typeof global.atob === "undefined") {
-  global.atob = atob;
-}
-if (typeof global.btoa === "undefined") {
-  global.btoa = btoa;
-}
+if (typeof global.atob === "undefined") global.atob = atob;
+if (typeof global.btoa === "undefined") global.btoa = btoa;
 
 export default function App() {
-  const [loading, setLoading] = useState(true);
+  const [bootLoading, setBootLoading] = useState(true);
 
   useEffect(() => {
-    const initialize = async () => {
+    (async () => {
       try {
         await Notifications.cancelAllScheduledNotificationsAsync();
-
         await setupNotificationChannel();
 
         const { status } = await Notifications.getPermissionsAsync();
@@ -65,28 +58,25 @@ export default function App() {
           }
         }
 
-        Notifications.addNotificationReceivedListener((notification) => {
-          console.log("📩 Foreground notification:", notification);
+        Notifications.addNotificationReceivedListener((n) => {
+          console.log("📩 Foreground notification:", n);
         });
       } catch (err) {
         console.warn("Notification setup error:", err);
       } finally {
-        setLoading(false);
+        setBootLoading(false);
       }
-    };
-
-    initialize();
+    })();
   }, []);
-
-  if (loading) return <SplashScreen />;
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <AuthProvider>
         <SafeAreaProvider>
           <NavigationContainer ref={navigationRef}>
-            <NotificationHandler />
-            <AppNavigator />
+            <NotificationHandler />{" "}
+            {/* keep this only here; remove from AppNavigator */}
+            {bootLoading ? <BootSplash /> : <AppNavigator />}
           </NavigationContainer>
           <StatusBar style="auto" />
           <Toast />
