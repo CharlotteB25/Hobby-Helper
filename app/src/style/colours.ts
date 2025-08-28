@@ -1,6 +1,6 @@
 export default {
   background: "#F8FAFC", // light gray background (slightly cooler than pure white)
-  text: "#1F2937", // dark slate (easy to read)
+  text: "#333c49ff", // dark slate (easy to read)
   primary: "#ed6d1dff", // warm orange (main action / buttons)
   secondary: "#FFFFFF", // white cards
   accent: "#8CC084", // soft green (your fave!)

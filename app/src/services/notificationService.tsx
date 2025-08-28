@@ -32,16 +32,17 @@ export interface UpdateUserData {
   preferences?: Preferences;
 }
 
-// ⚙️ Foreground behavior
+// ⚙️ Foreground behavior (modern props; avoids deprecation warning)
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
-    shouldShowAlert: true,
     shouldShowBanner: true,
     shouldShowList: true,
     shouldPlaySound: true,
     shouldSetBadge: false,
   }),
 });
+
+const RATING_DELAY_SECONDS = __DEV__ ? 60 : 7200; // 1 min (dev) vs 2 hours (prod)
 
 // ✅ Android default channel
 export const setupAndroidChannel = async () => {
@@ -60,7 +61,7 @@ export const setupAndroidNudgeChannel = async () => {
     await Notifications.setNotificationChannelAsync("nudges", {
       name: "Nudges",
       importance: Notifications.AndroidImportance.DEFAULT,
-      sound: null, // fine at the *channel* level
+      sound: null,
       vibrationPattern: [0],
       lockscreenVisibility: Notifications.AndroidNotificationVisibility.PUBLIC,
     });
@@ -77,10 +78,10 @@ export const requestNotificationPermissions = async (): Promise<boolean> => {
   return true;
 };
 
-// 🔔 Rating reminder after X seconds
+// 🔔 Rating reminder (routes to Rating via NotificationHandler on tap)
 export const scheduleRatingReminder = async (
   hobbyId: string,
-  delayInSeconds: number = 7200
+  delayInSeconds: number = RATING_DELAY_SECONDS
 ): Promise<void> => {
   const hasPermission = await requestNotificationPermissions();
   if (!hasPermission) {
@@ -90,15 +91,8 @@ export const scheduleRatingReminder = async (
 
   await setupAndroidChannel();
 
-  const scheduledAt = new Date(Date.now() + delayInSeconds * 1000);
-  console.log("📅 Scheduling notification with data:", { hobbyId });
-  console.log(
-    "📅 Notification will fire at:",
-    scheduledAt.toLocaleTimeString()
-  );
-
   const trigger: Notifications.TimeIntervalTriggerInput = {
-    type: Notifications.SchedulableTriggerInputTypes.TIME_INTERVAL, // ✅ enum, not string
+    type: Notifications.SchedulableTriggerInputTypes.TIME_INTERVAL,
     seconds: delayInSeconds,
     repeats: false,
     channelId: "default",
@@ -107,9 +101,12 @@ export const scheduleRatingReminder = async (
   await Notifications.scheduleNotificationAsync({
     content: {
       title: "How was your hobby?",
-      body: "Please rate your experience with the hobby.",
-      data: { hobbyId: String(hobbyId) },
+      body: "Tap to rate your experience.",
+      // 👇 Your NotificationHandler reads these and navigates to Rating
+      data: { type: "rating", hobbyId: String(hobbyId) },
       sound: "default",
+      autoDismiss: true,
+      sticky: false,
     },
     trigger,
   });
@@ -144,7 +141,7 @@ export const scheduleRandomNudge = async (delaySeconds = 30) => {
   }
 
   const trigger: Notifications.TimeIntervalTriggerInput = {
-    type: Notifications.SchedulableTriggerInputTypes.TIME_INTERVAL, // ✅ enum, not string
+    type: Notifications.SchedulableTriggerInputTypes.TIME_INTERVAL,
     seconds: delaySeconds,
     repeats: false,
     channelId: Platform.OS === "android" ? "nudges" : undefined,
@@ -155,7 +152,7 @@ export const scheduleRandomNudge = async (delaySeconds = 30) => {
       title: "Quick nudge",
       body: pickRandom(NUDGE_MESSAGES),
       data: { type: "nudge" },
-      sound: false, // ✅ silent content (TS expects string | boolean | undefined)
+      sound: false,
     },
     trigger,
   });

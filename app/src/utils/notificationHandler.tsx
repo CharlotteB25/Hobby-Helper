@@ -7,78 +7,118 @@ import { getHobbyById } from "../services/hobbyService";
 import { navigationRef } from "../services/navigationService";
 import { scheduleRandomNudge } from "../services/notificationService";
 
+// Small helper: normalize any data payload into an object
+function parseNotifData(raw: unknown): Record<string, any> {
+  if (!raw) return {};
+  if (typeof raw === "string") {
+    try {
+      return JSON.parse(raw);
+    } catch {
+      return {};
+    }
+  }
+  // Some platforms put it under dataString as well
+  // @ts-ignore
+  if (raw?.dataString && typeof raw.dataString === "string") {
+    try {
+      // @ts-ignore
+      return JSON.parse(raw.dataString);
+    } catch {
+      // fall through
+    }
+  }
+  return (raw as Record<string, any>) || {};
+}
+
 export const NotificationHandler = () => {
-  // Schedule a gentle test nudge ~30s after app open
+  // (Optional) gentle dev nudge shortly after app open
   useEffect(() => {
-    // If you only want this in dev, wrap: if (__DEV__) { scheduleRandomNudge(30); }
-    scheduleRandomNudge(30);
+    if (__DEV__) scheduleRandomNudge(30);
   }, []);
 
   useEffect(() => {
     const sub = Notifications.addNotificationResponseReceivedListener(
       async (response) => {
-        const data: any = response?.notification?.request?.content?.data ?? {};
-        const hobbyId = data?.hobbyId;
-        const type = data?.type;
+        try {
+          const content = response?.notification?.request?.content;
+          // Handles data as object, string, or { dataString: "..." }
+          const data = parseNotifData(content?.data);
+          const type = data?.type;
+          const hobbyId = String(data?.hobbyId || "");
 
-        // 1) Tap from rating reminder (your existing flow)
-        if (hobbyId && typeof hobbyId === "string") {
-          try {
-            const [hobby, user] = await Promise.all([
-              getHobbyById(hobbyId),
-              getCurrentUser(), // may 404 if not logged in
-            ]);
+          // Debug (comment out if noisy)
+          console.log("🔔 Tap payload:", { type, hobbyId, data, content });
 
-            if (!hobby || !user) {
-              throw new Error("Hobby or user not found");
+          // ── Rating tap ──────────────────────────────────────────────
+          if (type === "rating" && hobbyId) {
+            try {
+              const [hobby, user] = await Promise.all([
+                getHobbyById(hobbyId),
+                getCurrentUser(),
+              ]);
+              if (!hobby || !user) throw new Error("Hobby or user not found");
+
+              const go = () =>
+                navigationRef.navigate("Rating", {
+                  hobby,
+                  userId: user._id,
+                });
+
+              // Wait for nav tree to be ready
+              let retries = 0;
+              const interval = setInterval(() => {
+                if (navigationRef.isReady()) {
+                  clearInterval(interval);
+                  go();
+                } else if (++retries >= 15) {
+                  clearInterval(interval);
+                  console.warn("❌ navigationRef not ready after retries.");
+                  Toast.show({
+                    type: "error",
+                    text1: "Navigation not ready",
+                    text2: "Please try again.",
+                  });
+                }
+              }, 250);
+            } catch (err) {
+              console.error("❌ Failed to open Rating:", err);
+              Toast.show({
+                type: "error",
+                text1: "Couldn’t open rating",
+                text2: "This hobby couldn’t be loaded.",
+              });
             }
+            return; // handled
+          }
 
-            const go = () =>
-              navigationRef.navigate("Rating", {
-                hobby,
-                userId: user._id,
+          // ── Nudge tap (example) ────────────────────────────────────
+          if (type === "nudge") {
+            const goCreative = () =>
+              navigationRef.navigate("HobbyList", {
+                mood: "creative",
+                location: "Indoor",
+                tryNew: false,
               });
 
             let retries = 0;
             const interval = setInterval(() => {
               if (navigationRef.isReady()) {
                 clearInterval(interval);
-                go();
-              } else if (++retries >= 10) {
+                goCreative();
+              } else if (++retries >= 15) {
                 clearInterval(interval);
-                console.warn("❌ NavigationRef not ready after retries.");
+                console.warn(
+                  "❌ navigationRef not ready after retries (nudge)."
+                );
               }
-            }, 300);
-          } catch (err) {
-            console.error("❌ Failed to handle notification tap:", err);
-            Toast.show({
-              type: "error",
-              text1: "Oops!",
-              text2: "This hobby could not be loaded or no longer exists.",
-            });
+            }, 250);
+            return;
           }
-          return;
-        }
 
-        // 2) Tap from gentle nudge → take them to a creative list
-        if (type === "nudge") {
-          const goCreative = () =>
-            navigationRef.navigate("HobbyList", {
-              mood: "creative",
-              location: "Indoor",
-              tryNew: false,
-            });
-
-          let retries = 0;
-          const interval = setInterval(() => {
-            if (navigationRef.isReady()) {
-              clearInterval(interval);
-              goCreative();
-            } else if (++retries >= 10) {
-              clearInterval(interval);
-              console.warn("❌ NavigationRef not ready after retries (nudge).");
-            }
-          }, 300);
+          // Fallback: unknown tap type
+          console.log("ℹ️ Unknown notification tap payload:", data);
+        } catch (err) {
+          console.error("❌ Notification tap handler error:", err);
         }
       }
     );

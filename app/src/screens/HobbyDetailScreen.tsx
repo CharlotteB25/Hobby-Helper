@@ -1,5 +1,4 @@
-// src/screens/HobbyDetailScreen.tsx
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   View,
   Text,
@@ -12,6 +11,8 @@ import {
   TouchableOpacity,
   Linking,
   Platform,
+  ActivityIndicator,
+  DeviceEventEmitter,
 } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import { WebView } from "react-native-webview";
@@ -22,12 +23,12 @@ import Toast from "react-native-toast-message";
 import COLORS from "../style/colours";
 import { scheduleRatingReminder } from "../services/notificationService";
 import { getCurrentUser, updateUser } from "../services/userService";
+import { getHobbyById, searchHobbiesByName } from "../services/hobbyService";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../navigation/AppNavigator";
 
 type Props = NativeStackScreenProps<RootStackParamList, "HobbyDetail">;
 
-// Soft tints to match the rest of the app
 const SOFT = {
   orange: "#fee9dcff",
   green: "#EEF7E9",
@@ -37,17 +38,17 @@ const SOFT = {
 type DifficultyLevel = { level: string; youtubeLinks?: string[] };
 type Location = {
   _id?: string;
-  name: string;
+  name?: string;
   address?: string;
   lat?: number;
   lng?: number;
   trialAvailable?: boolean;
 };
 type Hobby = {
-  _id: string;
-  name: string;
-  description: string;
-  tags: string[];
+  _id?: string;
+  name?: string;
+  description?: string;
+  tags?: string[];
   costEstimate?: string;
   ecoFriendly?: boolean;
   trialAvailable?: boolean;
@@ -60,77 +61,228 @@ type Hobby = {
 
 const YT_EMBED = (url: string) =>
   url.includes("watch?v=") ? url.replace("watch?v=", "embed/") : url;
+const isFiniteNum = (n: any) => typeof n === "number" && Number.isFinite(n);
 
-export default function HobbyDetailScreen({ route }: Props) {
-  const { hobby, showRatingModal } = route.params;
-  const firstLocation = hobby.locations?.[0];
+/** Unwrap { user: ... } if your API returns that */
+const getUserRoot = (u: any) => (u && (u.user ?? u)) || {};
+
+/** Normalize whatever the server returns into [{hobbyId, name, startedAt}] */
+const normalizeOpenHobbies = (
+  raw: any
+): { hobbyId: string; name: string; startedAt: string }[] => {
+  if (!Array.isArray(raw)) return [];
+  return raw
+    .map((row: any) => {
+      const hobbyId =
+        row?.hobbyId ??
+        row?.id ??
+        row?._id ??
+        row?.hobby?.id ??
+        row?.hobby?._id;
+      if (!hobbyId) return null;
+      const name =
+        row?.name ??
+        row?.title ??
+        row?.hobby?.name ??
+        row?.hobby?.title ??
+        "Unknown Hobby";
+      const startedAt =
+        row?.startedAt ??
+        row?.started_at ??
+        row?.createdAt ??
+        row?.created_at ??
+        new Date().toISOString();
+      return {
+        hobbyId: String(hobbyId),
+        name: String(name),
+        startedAt: String(startedAt),
+      };
+    })
+    .filter(Boolean) as any[];
+};
+
+export default function HobbyDetailScreen({ route, navigation }: Props) {
+  // Accept flexible params: {hobby?, hobbyId?, name?, showRatingModal?}
+  const {
+    hobby: paramHobby,
+    hobbyId,
+    name,
+    showRatingModal,
+  } = route?.params ?? {};
+
+  const [hobby, setHobby] = useState<Hobby | null>(
+    paramHobby ?? (name || hobbyId ? { _id: hobbyId, name, tags: [] } : null)
+  );
+  const [loading, setLoading] = useState<boolean>(
+    !paramHobby && (!!hobbyId || !!name)
+  );
+
+  // Resolve the hobby if only id or name was provided
+  useEffect(() => {
+    let mounted = true;
+
+    const fetchHobby = async () => {
+      try {
+        if (paramHobby) {
+          setLoading(false);
+          return;
+        }
+        setLoading(true);
+
+        let resolved: Hobby | null = null;
+
+        if (hobbyId) {
+          resolved = await getHobbyById(hobbyId);
+        } else if (name) {
+          const results = await searchHobbiesByName(name);
+          if (Array.isArray(results) && results.length > 0) {
+            const exact = results.find(
+              (h: any) =>
+                (h?.name ?? "").trim().toLowerCase() ===
+                name.trim().toLowerCase()
+            );
+            resolved = exact ?? results[0];
+          }
+        }
+
+        if (mounted) {
+          if (resolved) {
+            setHobby(resolved);
+            navigation.setOptions?.({ title: resolved.name ?? "Hobby" });
+          } else {
+            Toast.show({
+              type: "error",
+              text1: "Not found",
+              text2: "We couldn’t load this hobby.",
+            });
+          }
+        }
+      } catch (e) {
+        if (mounted) {
+          console.error("Failed to load hobby:", e);
+          Toast.show({
+            type: "error",
+            text1: "Error",
+            text2: "Could not load hobby.",
+          });
+        }
+      } finally {
+        mounted && setLoading(false);
+      }
+    };
+
+    if (!paramHobby && (hobbyId || name)) {
+      fetchHobby();
+    } else {
+      navigation.setOptions?.({ title: paramHobby?.name ?? name ?? "Hobby" });
+      setLoading(false);
+    }
+
+    return () => {
+      mounted = false;
+    };
+  }, [paramHobby, hobbyId, name, navigation]);
+
+  const locations = hobby?.locations ?? [];
+  const firstLocation = locations[0];
+  const hasCoords =
+    isFiniteNum(firstLocation?.lat) && isFiniteNum(firstLocation?.lng);
 
   const beginnerVideo = useMemo(() => {
     const link =
-      hobby.difficultyLevels?.find((d) => d.level === "Beginner")
-        ?.youtubeLinks?.[0] ?? hobby.difficultyLevels?.[0]?.youtubeLinks?.[0];
+      hobby?.difficultyLevels?.find((d) => d.level === "Beginner")
+        ?.youtubeLinks?.[0] ?? hobby?.difficultyLevels?.[0]?.youtubeLinks?.[0];
     return link ? YT_EMBED(link) : null;
-  }, [hobby]);
+  }, [hobby?.difficultyLevels]);
 
   const [hasStarted, setHasStarted] = useState(false);
-  const [showModal, setShowModal] = useState(!!showRatingModal);
+  const [showModal, setShowModal] = useState<boolean>(!!showRatingModal);
   const [ratingInput, setRatingInput] = useState("");
 
+  // Title reacts to loaded hobby
+  useEffect(() => {
+    navigation.setOptions?.({ title: hobby?.name ?? name ?? "Hobby" });
+  }, [hobby?.name, name, navigation]);
+
+  // Restore started flag (needs an ID)
   useEffect(() => {
     (async () => {
+      if (!hobby?._id) {
+        setHasStarted(false);
+        return;
+      }
       const started = await AsyncStorage.getItem(`startedHobby:${hobby._id}`);
       setHasStarted(!!started);
     })();
-  }, [hobby._id]);
+  }, [hobby?._id]);
 
+  // If deep-linked to rating
   useEffect(() => {
     if (showRatingModal) setShowModal(true);
   }, [showRatingModal]);
 
   const handleStartHobby = async () => {
     try {
-      await Notifications.cancelAllScheduledNotificationsAsync();
-      if (!hobby._id) throw new Error("Hobby ID is missing.");
+      if (!hobby?._id) throw new Error("Hobby ID is missing.");
 
-      // schedule in 2 hours (7200 seconds)
-      await scheduleRatingReminder(hobby._id, 7200);
+      await Notifications.cancelAllScheduledNotificationsAsync();
+      await scheduleRatingReminder(hobby._id);
       await AsyncStorage.setItem(`startedHobby:${hobby._id}`, "true");
       setHasStarted(true);
+
+      const user = await getCurrentUser();
+      console.log("Profile openHobbies:", user.openHobbies);
+
+      const list = Array.isArray(user.openHobbies) ? user.openHobbies : [];
+      const startedAt = new Date().toISOString();
+      const next = [
+        { hobbyId: hobby._id, name: hobby.name ?? "Unknown Hobby", startedAt },
+        ...list.filter((x: any) => x.hobbyId !== hobby._id),
+      ];
+      const updated = await updateUser({ openHobbies: next } as any);
+
+      // 🔔 Tell other screens
+      DeviceEventEmitter.emit(
+        "OPEN_HOBBIES_CHANGED",
+        updated.openHobbies ?? next
+      );
 
       Toast.show({
         type: "success",
         text1: "⏳ Reminder set",
-        text2: "We’ll remind you to rate this hobby in 2 hours.",
+        text2: "We’ll remind you to rate this hobby soon.",
       });
     } catch (error) {
       console.error("Failed to start hobby:", error);
-      Alert.alert("Oops!", "Failed to schedule the reminder.");
+      Alert.alert("Oops!", "Failed to start the hobby.");
     }
   };
 
   const handleCompleteHobby = async () => {
     try {
-      await AsyncStorage.removeItem(`startedHobby:${hobby._id}`);
+      if (hobby?._id) {
+        await AsyncStorage.removeItem(`startedHobby:${hobby._id}`);
+      }
       await Notifications.cancelAllScheduledNotificationsAsync();
-
-      // Optional: persist to user history (if your API supports it)
-      const user = await getCurrentUser();
-      const updatedHistory = [
-        ...(user.hobbyHistory || []),
-        {
-          id: Date.now(),
-          name: hobby.name || "Unknown Hobby",
-          date: new Date().toISOString(),
-          rating: 0,
-        },
-      ];
-      await updateUser({ ...user, hobbyHistory: updatedHistory });
-
       setHasStarted(false);
+
+      const user = await getCurrentUser();
+      const list = Array.isArray(user.openHobbies) ? user.openHobbies : [];
+      const next = hobby?._id
+        ? list.filter((x: any) => x.hobbyId !== hobby._id)
+        : list;
+      const updated = await updateUser({ openHobbies: next } as any);
+
+      // 🔔 Tell other screens
+      DeviceEventEmitter.emit(
+        "OPEN_HOBBIES_CHANGED",
+        updated.openHobbies ?? next
+      );
+
       Toast.show({
         type: "success",
-        text1: "✅ Hobby complete",
-        text2: "Saved to your profile history!",
+        text1: "Nice work!",
+        text2: "We’ll nudge you to rate this shortly.",
       });
     } catch (error) {
       console.error("Error finishing hobby:", error);
@@ -139,9 +291,25 @@ export default function HobbyDetailScreen({ route }: Props) {
   };
 
   const openInMaps = () => {
-    if (!firstLocation?.lat || !firstLocation?.lng) return;
-    const url = `https://www.google.com/maps/search/?api=1&query=${firstLocation.lat},${firstLocation.lng}`;
+    if (!hasCoords) return;
+    const url = `https://www.google.com/maps/search/?api=1&query=${firstLocation!.lat},${firstLocation!.lng}`;
     Linking.openURL(url).catch(() => {});
+  };
+
+  /** Writes to history with the given rating (number 1–5) or undefined (skip) */
+  const writeHistory = async (rating?: number) => {
+    const user = getUserRoot(await getCurrentUser());
+    const updatedHistory = [
+      ...(user.hobbyHistory || []),
+      {
+        id: Date.now(),
+        hobbyId: hobby?._id,
+        name: hobby?.name ?? name ?? "Unknown Hobby",
+        date: new Date().toISOString(),
+        rating,
+      },
+    ];
+    await updateUser({ ...user, hobbyHistory: updatedHistory });
   };
 
   const submitRating = async () => {
@@ -150,33 +318,55 @@ export default function HobbyDetailScreen({ route }: Props) {
       Alert.alert("Invalid Rating", "Enter a number between 1 and 5.");
       return;
     }
-
     try {
-      const user = await getCurrentUser();
-      const updatedHistory = [
-        ...(user.hobbyHistory || []),
-        {
-          id: Date.now(),
-          name: hobby.name,
-          date: new Date().toISOString(),
-          duration: "2 hours",
-          rating,
-        },
-      ];
-      await updateUser({ ...user, hobbyHistory: updatedHistory });
-
+      await writeHistory(rating);
+      setShowModal(false);
+      setRatingInput("");
       Toast.show({
         type: "success",
         text1: "🎉 Rating saved",
         text2: "Your rating was added to your history!",
       });
-      setShowModal(false);
-      setRatingInput("");
     } catch (err) {
       console.error("Failed to save rating:", err);
       Alert.alert("Error", "Could not save your rating.");
     }
   };
+
+  const skipRating = async () => {
+    try {
+      await writeHistory(undefined);
+      setShowModal(false);
+      setRatingInput("");
+      Toast.show({
+        type: "success",
+        text1: "Saved",
+        text2: "Hobby added to your history.",
+      });
+    } catch (err) {
+      console.error("Failed to save entry:", err);
+      Alert.alert("Error", "Could not save your hobby to history.");
+    }
+  };
+
+  const hobbyTitle = hobby?.name ?? name ?? "Hobby";
+  const description = hobby?.description ?? "No description yet.";
+
+  if (loading) {
+    return (
+      <View
+        style={[
+          styles.screen,
+          { justifyContent: "center", alignItems: "center" },
+        ]}
+      >
+        <ActivityIndicator size="large" color={COLORS.primary} />
+        <Text style={{ marginTop: 12, color: COLORS.text }}>
+          Loading hobby…
+        </Text>
+      </View>
+    );
+  }
 
   return (
     <ScrollView
@@ -210,6 +400,13 @@ export default function HobbyDetailScreen({ route }: Props) {
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.modalGhost}
+              onPress={skipRating}
+              activeOpacity={0.9}
+            >
+              <Text style={styles.modalGhostText}>Skip rating</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.modalGhost}
               onPress={() => setShowModal(false)}
               activeOpacity={0.9}
             >
@@ -219,16 +416,16 @@ export default function HobbyDetailScreen({ route }: Props) {
         </View>
       </Modal>
 
-      {/* Hero map */}
+      {/* Hero */}
       <View style={styles.hero}>
-        {firstLocation?.lat && firstLocation?.lng ? (
+        {hasCoords ? (
           <>
             <MapView
               style={styles.map}
               pointerEvents="none"
               initialRegion={{
-                latitude: firstLocation.lat,
-                longitude: firstLocation.lng,
+                latitude: firstLocation!.lat as number,
+                longitude: firstLocation!.lng as number,
                 latitudeDelta: 0.01,
                 longitudeDelta: 0.01,
               }}
@@ -238,11 +435,11 @@ export default function HobbyDetailScreen({ route }: Props) {
             >
               <Marker
                 coordinate={{
-                  latitude: firstLocation.lat,
-                  longitude: firstLocation.lng,
+                  latitude: firstLocation!.lat as number,
+                  longitude: firstLocation!.lng as number,
                 }}
-                title={firstLocation.name}
-                description={firstLocation.address}
+                title={firstLocation?.name ?? hobbyTitle}
+                description={firstLocation?.address}
               />
             </MapView>
             <TouchableOpacity
@@ -251,7 +448,7 @@ export default function HobbyDetailScreen({ route }: Props) {
               activeOpacity={1}
             />
             <View style={styles.mapOverlay}>
-              <Text style={styles.heroTitle}>{hobby.name}</Text>
+              <Text style={styles.heroTitle}>{hobbyTitle}</Text>
               {firstLocation?.name ? (
                 <Text style={styles.heroSubtitle}>{firstLocation.name}</Text>
               ) : null}
@@ -267,41 +464,41 @@ export default function HobbyDetailScreen({ route }: Props) {
               { justifyContent: "center", alignItems: "center" },
             ]}
           >
-            <Text style={styles.heroTitle}>{hobby.name}</Text>
+            <Text style={styles.noMapTitle}>{hobbyTitle}</Text>
           </View>
         )}
       </View>
 
       {/* Meta chips */}
       <View style={styles.chips}>
-        {hobby.ecoFriendly ? (
+        {hobby?.ecoFriendly ? (
           <View style={styles.chip} key="meta-eco">
             <Text style={styles.chipText}>🌿 Eco</Text>
           </View>
         ) : null}
-        {hobby.trialAvailable || firstLocation?.trialAvailable ? (
+        {hobby?.trialAvailable || firstLocation?.trialAvailable ? (
           <View style={styles.chip} key="meta-trial">
             <Text style={styles.chipText}>🆓 Trial</Text>
           </View>
         ) : null}
-        {hobby.wheelchairAccessible ? (
+        {hobby?.wheelchairAccessible ? (
           <View style={styles.chip} key="meta-access">
             <Text style={styles.chipText}>♿ Access</Text>
           </View>
         ) : null}
-        {hobby.costEstimate ? (
+        {hobby?.costEstimate ? (
           <View style={styles.chip} key="meta-cost">
             <Text style={styles.chipText}>{hobby.costEstimate}</Text>
           </View>
         ) : null}
       </View>
 
-      {/* Description */}
+      {/* Description + tags */}
       <View style={styles.section}>
-        <Text style={styles.desc}>{hobby.description}</Text>
-        {!!hobby.tags?.length && (
+        <Text style={styles.desc}>{description}</Text>
+        {!!hobby?.tags?.length && (
           <View style={styles.tagsWrap}>
-            {hobby.tags.map((tag, i) => (
+            {(hobby?.tags ?? []).map((tag, i) => (
               <View style={styles.tagPill} key={`tag-${tag}-${i}`}>
                 <Text style={styles.tagText}>{tag}</Text>
               </View>
@@ -314,14 +511,14 @@ export default function HobbyDetailScreen({ route }: Props) {
 
       {/* Info grid */}
       <View style={styles.grid}>
-        <InfoBox label="Cost" value={hobby.costEstimate || "Varies"} />
+        <InfoBox label="Cost" value={hobby?.costEstimate || "Varies"} />
         <InfoBox
           label="Accessibility"
-          value={hobby.wheelchairAccessible ? "Yes" : "No"}
+          value={hobby?.wheelchairAccessible ? "Yes" : "No"}
         />
         <InfoBox
           label="Eco-Friendly"
-          value={hobby.ecoFriendly ? "Yes" : "No"}
+          value={hobby?.ecoFriendly ? "Yes" : "No"}
         />
         <InfoBox
           label="Trial Available"
@@ -330,12 +527,12 @@ export default function HobbyDetailScreen({ route }: Props) {
         <InfoBox
           label="Equipment"
           value={
-            Array.isArray(hobby.equipment) && hobby.equipment.length
-              ? hobby.equipment.join(", ")
+            Array.isArray(hobby?.equipment) && hobby?.equipment?.length
+              ? (hobby?.equipment ?? []).join(", ")
               : "None"
           }
         />
-        <InfoBox label="Safety Notes" value={hobby.safetyNotes || "None"} />
+        <InfoBox label="Safety Notes" value={hobby?.safetyNotes || "None"} />
       </View>
 
       <View style={styles.divider} />
@@ -395,9 +592,10 @@ const styles = StyleSheet.create({
   map: { ...StyleSheet.absoluteFillObject },
   noMap: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: SOFT.neutral,
+    backgroundColor: COLORS.secondary,
     padding: 16,
   },
+  noMapTitle: { color: COLORS.primary, fontSize: 24, fontWeight: "900" },
   mapOverlay: {
     position: "absolute",
     bottom: 0,
@@ -478,7 +676,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "rgba(0,0,0,0.06)",
     alignItems: "center",
-    // subtle elevation/shadow
     ...Platform.select({
       ios: {
         shadowColor: "#000",

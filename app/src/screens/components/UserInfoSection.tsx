@@ -198,7 +198,7 @@ const styles = StyleSheet.create({
     color: COLORS.text,
   },
   saveButton: {
-    backgroundColor: COLORS.action,
+    backgroundColor: COLORS.primary,
     paddingVertical: 12,
     borderRadius: 25,
     alignItems: "center",

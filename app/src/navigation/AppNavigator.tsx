@@ -250,7 +250,6 @@ export default function AppNavigator() {
         >
           <View style={styles.menuSheet}>
             <View style={styles.menuHeader}>
-              <Text style={styles.menuAppTitle}>Hobby Helper</Text>
               <Text style={styles.menuGreeting}>
                 {isAuthenticated
                   ? `Hi, ${user?.name || "friend"}!`
